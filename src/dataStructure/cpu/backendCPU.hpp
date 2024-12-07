@@ -31,6 +31,7 @@
 #define BACKENDCPU_HPP_
 
 #include <cmath>
+#include <cstring>
 
 #include <fftw3.h>
 

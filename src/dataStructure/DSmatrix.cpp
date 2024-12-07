@@ -64,8 +64,8 @@ DSmatrix<Tdata, backend>::DSmatrix(DSmatrix& inMat)
 {
     mRows = inMat.mRows;
     mCols = inMat.mCols;
-    mData = backend<Tdata>::allocate(rows * cols);
-    backend<T>::copy(mData, inMat.mData, mRows*mCols);
+    mData = backend<Tdata>::allocate(mRows * mCols);
+    backend<Tdata>::copy(mData, inMat.mData, mRows*mCols);
 }
 
 template <typename Tdata, template <class> class backend>
