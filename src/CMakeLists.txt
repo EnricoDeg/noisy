@@ -11,10 +11,14 @@ if (ENABLE_CUDA)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCUDA ")
 endif()
 
-set(SOURCE_EXE dataStructure/DSmatrix.cpp)
+set(SOURCE_EXE  backend/cpu/backendCPUmemory.cpp
+                backend/cpu/backendCPUop.cpp
+                dataStructure/DSmatrix.cpp
+                transform/transformMatrix.cpp)
 
 if (ENABLE_CUDA)
-    set(SOURCE_CUDA dataStructure/cuda/backendCUDA.cu)
+    set(SOURCE_CUDA backend/cuda/backendCUDAmemory.cu
+                    backend/cuda/backendCUDAop.cu)
 endif()
 
 add_library(noisy SHARED ${SOURCE_CUDA} ${SOURCE_EXE})

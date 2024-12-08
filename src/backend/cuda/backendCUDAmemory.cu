@@ -1,5 +1,5 @@
 /*
- * @file backendCUDA.cu
+ * @file backendCUDAmemory.cu
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,7 +27,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "src/dataStructure/cuda/backendCUDA.hpp"
+#include "src/backend/cuda/backendCUDA.hpp"
 
 #include "cuAlgo.hpp"
 
@@ -55,33 +55,26 @@ __global__ void fillKernel(T            * __restrict__ data,
 }
 
 template <typename Tdata>
-Tdata * cuda_impl<Tdata>::allocate(unsigned int elements) {
+Tdata * cuda_impl<Tdata>::memory::allocate(unsigned int elements) {
     Tdata *p;
     check_cuda( cudaMalloc(&p, elements * sizeof(Tdata)) );
     return p;
 }
 
 template <typename Tdata>
-void cuda_impl<Tdata>::free(Tdata * data) {
+void cuda_impl<Tdata>::memory::free(Tdata * data) {
     check_cuda( cudaFree(data) );
 }
 
 template <typename Tdata>
-void cuda_impl<Tdata>::copy(Tdata *dst, Tdata *src, unsigned int size) {
+void cuda_impl<Tdata>::memory::copy(Tdata *dst, Tdata *src, unsigned int size) {
     check_cuda( cudaMemcpy(dst, src, size*sizeof(Tdata), cudaMemcpyDeviceToDevice) );
 }
 
 template <typename Tdata>
-void cuda_impl<Tdata>::fill(Tdata * __restrict__ data, unsigned int size, Tdata value) {
+void cuda_impl<Tdata>::memory::fill(Tdata * __restrict__ data, unsigned int size, Tdata value) {
     dim3 threadsPerBlock(THREADS_PER_BLOCK);
     dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
     fillKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(data, size, value);
     check_cuda( cudaStreamSynchronize(0) );
 }
-
-template <typename Tdata>
-void cuda_impl<Tdata>::normalize(Tdata * __restrict__ data, unsigned int size) {
-    cuAlgo::normalizeVector(data, size);
-}
-
-template class cuda_impl<float>;

@@ -1,5 +1,5 @@
 /*
- * @file test_DSmatrix.cpp
+ * @file backendCPUop.cpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,43 +27,17 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <iostream>
-
-#include "src/dataStructure/dataStruct.hpp"
 #include "src/backend/cpu/backendCPU.hpp"
-#include "src/backend/cuda/backendCUDA.hpp"
 
-#include <gtest/gtest.h>
-#ifdef CUDA
-#include "tests/utils/test_utils.hpp"
-#endif
+#include <cmath>
 
-TEST(DSmatrix, constructor_destructor_CPU) {
+template <typename Tdata>
+void cpu_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
 
-    unsigned int rows = 1024;
-    unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
-    float * data = myMatrix.data();
-    ASSERT_TRUE(data != nullptr);
+    Tdata tmp = 0;
+    for (unsigned int i = 0; i < size; ++i)
+        tmp += std::abs(data[i]);
+
+    for (unsigned int i = 0; i < size; ++i)
+        data[i] /= tmp;
 }
-
-#ifdef CUDA
-TEST(DSmatrix, constructor_destructor_CUDA) {
-
-    unsigned int rows = 1024;
-    unsigned int cols =  512;
-    DSmatrix<float, cuda_impl> myMatrix(rows, cols, 1.0);
-    float * data = myMatrix.data();
-    ASSERT_TRUE(data != nullptr);
-}
-
-TEST(DSmatrix, normalize_CUDA) {
-
-    unsigned int rows = 1024;
-    unsigned int cols =  512;
-    DSmatrix<float, cuda_impl> myMatrix(rows, cols, 1.0);
-    myMatrix.normalize();
-    // test results
-    test_check_device_results(myMatrix.data(), rows * cols, 1.0f / (rows * cols), 1e-7f);
-}
-#endif

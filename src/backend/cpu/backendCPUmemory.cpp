@@ -1,5 +1,5 @@
 /*
- * @file backendCUDA.hpp
+ * @file backendCPUmemory.cpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,18 +27,33 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef BACKENDCUDA_HPP_
-#define BACKENDCUDA_HPP_
+#include "src/backend/cpu/backendCPU.hpp"
+
+#include <cstring>
+
+#include <fftw3.h>
 
 template <typename Tdata>
-class cuda_impl {
- public:
+Tdata * cpu_impl<Tdata>::memory::allocate(unsigned int elements) {
 
-    static Tdata * allocate(unsigned int elements) ;
-    static void free(Tdata *data) ;
-    static void copy(Tdata* dst, Tdata *src, unsigned int size);
-    static void fill(Tdata * __restrict__ data, unsigned int size, Tdata value);
-    static void normalize(Tdata * __restrict__ data, unsigned int size);
-};
+    return (Tdata*) fftw_malloc(sizeof(Tdata) * elements);
+}
 
-#endif
+template <typename Tdata>
+void cpu_impl<Tdata>::memory::free(Tdata *data) {
+
+    fftw_free(data);
+}
+
+template <typename Tdata>
+void cpu_impl<Tdata>::memory::copy(Tdata* dst, Tdata *src, unsigned int size) {
+
+        std::memcpy(dst, src, size * sizeof(Tdata));
+    }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::memory::fill(Tdata * __restrict__ data, unsigned int size, Tdata value) {
+
+    for (unsigned int i = 0; i < size; ++i)
+        data[i] = value;
+}

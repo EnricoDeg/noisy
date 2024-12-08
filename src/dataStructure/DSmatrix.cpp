@@ -29,9 +29,9 @@
 
 #include "src/dataStructure/dataStruct.hpp"
 
-#include "src/dataStructure/cpu/backendCPU.hpp"
+#include "src/backend/cpu/backendCPU.hpp"
 #ifdef CUDA
-#include "src/dataStructure/cuda/backendCUDA.hpp"
+#include "src/backend/cuda/backendCUDA.hpp"
 #endif
 
 template <typename Tdata, template <class> class backend>
@@ -40,14 +40,14 @@ DSmatrix<Tdata, backend>::DSmatrix(unsigned int rows, unsigned int cols)
   mCols(cols),
   mNeedAlloc(true)
 {
-    mData = backend<Tdata>::allocate(rows * cols);
+    mData = backend<Tdata>::memory::allocate(rows * cols);
 }
 
 template <typename Tdata, template <class> class backend>
 DSmatrix<Tdata, backend>::DSmatrix(unsigned int rows, unsigned int cols, Tdata value)
 : DSmatrix(rows, cols)
 {
-    backend<Tdata>::fill(mData, mRows*mCols, value);
+    backend<Tdata>::memory::fill(mData, mRows*mCols, value);
 }
 
 template <typename Tdata, template <class> class backend>
@@ -64,15 +64,15 @@ DSmatrix<Tdata, backend>::DSmatrix(DSmatrix& inMat)
 {
     mRows = inMat.mRows;
     mCols = inMat.mCols;
-    mData = backend<Tdata>::allocate(mRows * mCols);
-    backend<Tdata>::copy(mData, inMat.mData, mRows*mCols);
+    mData = backend<Tdata>::memory::allocate(mRows * mCols);
+    backend<Tdata>::memory::copy(mData, inMat.mData, mRows*mCols);
 }
 
 template <typename Tdata, template <class> class backend>
 DSmatrix<Tdata, backend>::~DSmatrix()
 {
     if (mNeedAlloc)
-        backend<Tdata>::free(mData);
+        backend<Tdata>::memory::free(mData);
 }
 
 template
@@ -114,7 +114,7 @@ unsigned int DSmatrix<Tdata, backend>::size()
 template <typename Tdata, template <class> class backend>
 void DSmatrix<Tdata, backend>::normalize() {
 
-    backend<Tdata>::normalize(mData, mRows * mCols);
+    backend<Tdata>::op::normalize(mData, mRows * mCols);
 }
 
 template class DSmatrix<float, cpu_impl>;

@@ -1,5 +1,5 @@
 /*
- * @file test_DSmatrix.cpp
+ * @file transformMatrix.hpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,43 +27,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <iostream>
+#ifndef TRANSFORMMATRIX_HPP_
+#define TRANSFORMMATRIX_HPP_
 
 #include "src/dataStructure/dataStruct.hpp"
-#include "src/backend/cpu/backendCPU.hpp"
-#include "src/backend/cuda/backendCUDA.hpp"
 
-#include <gtest/gtest.h>
-#ifdef CUDA
-#include "tests/utils/test_utils.hpp"
-#endif
+template <typename Tdata, template <class> class  backend>
+void downsample(const DSmatrix<Tdata, backend>& inMat ,
+                      unsigned int              dim   ,
+                      unsigned int              stride,
+                      DSmatrix<Tdata, backend>& outMat);
 
-TEST(DSmatrix, constructor_destructor_CPU) {
-
-    unsigned int rows = 1024;
-    unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
-    float * data = myMatrix.data();
-    ASSERT_TRUE(data != nullptr);
-}
-
-#ifdef CUDA
-TEST(DSmatrix, constructor_destructor_CUDA) {
-
-    unsigned int rows = 1024;
-    unsigned int cols =  512;
-    DSmatrix<float, cuda_impl> myMatrix(rows, cols, 1.0);
-    float * data = myMatrix.data();
-    ASSERT_TRUE(data != nullptr);
-}
-
-TEST(DSmatrix, normalize_CUDA) {
-
-    unsigned int rows = 1024;
-    unsigned int cols =  512;
-    DSmatrix<float, cuda_impl> myMatrix(rows, cols, 1.0);
-    myMatrix.normalize();
-    // test results
-    test_check_device_results(myMatrix.data(), rows * cols, 1.0f / (rows * cols), 1e-7f);
-}
 #endif

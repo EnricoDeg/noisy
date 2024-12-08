@@ -1,5 +1,5 @@
 /*
- * @file backendCPU.hpp
+ * @file backendCUDAop.cu
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,44 +27,11 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef BACKENDCPU_HPP_
-#define BACKENDCPU_HPP_
+#include "src/backend/cuda/backendCUDA.hpp"
 
-#include <cmath>
-#include <cstring>
-
-#include <fftw3.h>
+#include "cuAlgo.hpp"
 
 template <typename Tdata>
-class cpu_impl {
- public:
-
-    static Tdata * allocate(unsigned int elements) {
-        return (Tdata*) fftw_malloc(sizeof(Tdata) * elements);
-    }
-
-    static void free(Tdata *data) {
-        fftw_free(data);
-    }
-
-    static void copy(Tdata* dst, Tdata *src, unsigned int size) {
-        std::memcpy(dst, src, size * sizeof(Tdata));
-    }
-
-    static void fill(Tdata * __restrict__ data, unsigned int size, Tdata value) {
-        for (unsigned int i = 0; i < size; ++i)
-            data[i] = value;
-    }
-
-    static void normalize(Tdata * __restrict__ data, unsigned int size) {
-
-        Tdata tmp = 0;
-        for (unsigned int i = 0; i < size; ++i)
-            tmp += std::abs(data[i]);
-
-        for (unsigned int i = 0; i < size; ++i)
-            data[i] /= tmp;
-    }
-};
-
-#endif
+void cuda_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
+    cuAlgo::normalizeVector(data, size);
+}
