@@ -30,12 +30,44 @@
 #include "src/transform/transformMatrix.hpp"
 
 template <typename Tdata, template <class> class  backend>
-void downsample(const DSmatrix<Tdata, backend>& inMat ,
-                      unsigned int              dim   ,
-                      unsigned int              stride,
-                      DSmatrix<Tdata, backend>& outMat) {
+void downsample(const DSmatrix<Tdata, backend>& inMat  ,
+                      unsigned int              dim    ,
+                      unsigned int              stride ,
+                      DSmatrix<Tdata, backend>& outMat ) {
+
+    t_dims dims = inMat.dims();
+    if (dim == 0) {
+        unsigned int count = 0;
+        for (unsigned int i = 0; i < dims.rows; i+=stride, ++count);
+        t_dims dimsOut = outMat.dims();
+        assert(dimsOut.rows == count);
+    } else {
+        unsigned int count = 0;
+        for (unsigned int i = 0; i < dims.cols; i+=stride, ++count);
+        t_dims dimsOut = outMat.dims();
+        assert(dimsOut.cols == count);
+    }
 
     Tdata * __restrict__ inData = inMat.data();
     Tdata * __restrict__ outData = outMat.data();
-    // backend<Tdata>::downsample();
+    backend<Tdata>::transform::downsample(inData, outData, dim, stride, dims.rows, dims.cols);
+}
+
+template <typename Tdata, template <class> class  backend>
+void upsample(const DSmatrix<Tdata, backend>& inMat  ,
+                    unsigned int              dim    ,
+                    unsigned int              nzeros ,
+                    DSmatrix<Tdata, backend>& outMat ) {
+
+    t_dims dims = inMat.dims();
+    t_dims dimsOut = outMat.dims();
+    if (dim == 0) {
+        assert(dimsOut.rows == (dims.rows-1)*(nzeros)+dims.rows);
+    } else {
+        assert(dimsOut.cols == (dims.cols-1)*(nzeros)+dims.cols);
+    }
+
+    Tdata * __restrict__ inData = inMat.data();
+    Tdata * __restrict__ outData = outMat.data();
+    backend<Tdata>::transform::upsample(inData, outData, dim, nzeros, dims.rows, dims.cols);
 }

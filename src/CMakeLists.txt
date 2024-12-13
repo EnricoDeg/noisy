@@ -13,12 +13,14 @@ endif()
 
 set(SOURCE_EXE  backend/cpu/backendCPUmemory.cpp
                 backend/cpu/backendCPUop.cpp
+                backend/cpu/backendCPUtransform.cpp
                 dataStructure/DSmatrix.cpp
                 transform/transformMatrix.cpp)
 
 if (ENABLE_CUDA)
     set(SOURCE_CUDA backend/cuda/backendCUDAmemory.cu
-                    backend/cuda/backendCUDAop.cu)
+                    backend/cuda/backendCUDAop.cu
+                    backend/cuda/backendCUDAtransform.cu)
 endif()
 
 add_library(noisy SHARED ${SOURCE_CUDA} ${SOURCE_EXE})

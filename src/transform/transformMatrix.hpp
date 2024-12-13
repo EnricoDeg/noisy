@@ -38,4 +38,10 @@ void downsample(const DSmatrix<Tdata, backend>& inMat ,
                       unsigned int              stride,
                       DSmatrix<Tdata, backend>& outMat);
 
+template <typename Tdata, template <class> class  backend>
+void upsample(const DSmatrix<Tdata, backend>& inMat ,
+                    unsigned int              dim   ,
+                    unsigned int              nzeros,
+                    DSmatrix<Tdata, backend>& outMat);
+
 #endif

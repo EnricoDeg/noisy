@@ -36,6 +36,7 @@ class cuda_impl {
 
     class memory;
     class op;
+    class transform;
 };
 
 template<typename Tdata>
@@ -53,6 +54,25 @@ class cuda_impl<Tdata>::op {
 
 public:
     static void normalize(Tdata * __restrict__ data, unsigned int size);
+};
+
+template<typename Tdata>
+class cuda_impl<Tdata>::transform {
+
+public:
+    static void downsample(Tdata * __restrict__ inMat,
+                           Tdata * __restrict__ outMat,
+                           unsigned int dim,
+                           unsigned int stride,
+                           unsigned int mRows,
+                           unsigned int mCols);
+
+    static void upsample(Tdata * __restrict__ in,
+                         Tdata * __restrict__ out,
+                         unsigned int  dim   ,
+                         unsigned int  nzeros,
+                         unsigned int  mRows ,
+                         unsigned int  mCols );
 };
 
 template class cuda_impl<float>;

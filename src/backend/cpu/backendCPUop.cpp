@@ -41,3 +41,4 @@ void cpu_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size
     for (unsigned int i = 0; i < size; ++i)
         data[i] /= tmp;
 }
+
