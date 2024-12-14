@@ -1,5 +1,5 @@
 /*
- * @file backendCUDAop.cu
+ * @file FourierTransform.hpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,23 +27,28 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "src/backend/cuda/backendCUDA.hpp"
+#ifndef FOURIERTRANSFORM_HPP_
+#define FOURIERTRANSFORM_HPP_
 
-#include <cassert>
+#include "src/backend/cpu/backendCPUfourier.hpp"
+#include "src/backend/cuda/backendCUDAfourier.hpp"
+#include <memory>
 
-#include "cuAlgo.hpp"
+template <typename Tdata, template <class> class  backend>
+class FourierTransform
+{
+public:
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
+    FourierTransform(unsigned int rows, unsigned int cols) {
+        m_impl = std::shared_ptr<fft_type>(new fft_type(rows, cols));
+    }
+    ~FourierTransform() {
+        m_impl.reset();
+    }
 
-    cuAlgo::normalizeVector(data, size);
-}
+private:
+    using fft_type = typename backend<Tdata>::fourier;
+    std::shared_ptr<fft_type> m_impl;
+};
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::fliplr(Tdata * __restrict__ data, unsigned int dim,
-                                  unsigned int mRows, unsigned int mCols) {
-
-    assert(dim == 0 || dim == 1);
-    cuAlgo::fliplr1dMatrix(data, dim, mRows , mCols);
-}
-
+#endif

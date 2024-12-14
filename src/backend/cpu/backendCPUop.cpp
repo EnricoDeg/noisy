@@ -28,8 +28,10 @@
  */
 
 #include "src/backend/cpu/backendCPU.hpp"
+#include "src/utils/utils.hpp"
 
 #include <cmath>
+#include <cassert>
 
 template <typename Tdata>
 void cpu_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
@@ -42,3 +44,32 @@ void cpu_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size
         data[i] /= tmp;
 }
 
+template <typename Tdata>
+void cpu_impl<Tdata>::op::fliplr(Tdata * __restrict__ data, unsigned int dim,
+                                 unsigned int mRows, unsigned int mCols) {
+
+    assert(dim == 0 || dim == 1);
+
+    if (dim == 0) {
+
+        unsigned int hRows = mRows % 2 == 0 ? mRows / 2 : (mRows + 1) / 2;
+        for (unsigned int i = 0; i < hRows; ++i) {
+
+            Tdata * __restrict in1 = data + i*mCols;
+            Tdata * __restrict in2 = data + (mRows - 1 - i)*mCols;
+            for (unsigned int j = 0; j < mCols; ++j)
+                _swap(in1 + j, in2 + j);
+        }
+
+    } else if (dim == 1) {
+
+        unsigned int hCols = mCols % 2 == 0 ? mCols / 2 : (mCols + 1) / 2;
+        for (unsigned int i = 0; i < mRows; ++i) {
+
+            Tdata * __restrict in1 = data + i*mCols;
+            Tdata * __restrict in2 = data + i*mCols + mCols - 1;
+            for (unsigned int j = 0; j < hCols; ++j)
+                _swap(in1 + j, in2 - j);
+        }
+    }
+}

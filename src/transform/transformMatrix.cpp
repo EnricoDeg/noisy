@@ -29,6 +29,8 @@
 
 #include "src/transform/transformMatrix.hpp"
 
+#include <cassert>
+
 template <typename Tdata, template <class> class  backend>
 void downsample(const DSmatrix<Tdata, backend>& inMat  ,
                       unsigned int              dim    ,

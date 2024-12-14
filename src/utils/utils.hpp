@@ -1,5 +1,5 @@
 /*
- * @file backendCUDAop.cu
+ * @file utils.hpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,23 +27,32 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "src/backend/cuda/backendCUDA.hpp"
+#ifndef UTILS_HPP_
+#define UTILS_HPP_
 
-#include <cassert>
+#include<cstdlib>
+#include<iostream>
 
-#include "cuAlgo.hpp"
+template<typename T>
+inline
+void _swap(T *a, T *b) {
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
-
-    cuAlgo::normalizeVector(data, size);
+    T aux = *a;
+    *a = *b;
+    *b = aux;
 }
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::fliplr(Tdata * __restrict__ data, unsigned int dim,
-                                  unsigned int mRows, unsigned int mCols) {
+void set_seed() {
 
-    assert(dim == 0 || dim == 1);
-    cuAlgo::fliplr1dMatrix(data, dim, mRows , mCols);
+    srand((unsigned) time(NULL));
 }
 
+template<typename T>
+void generate_random_values(T *data, unsigned int size, T min, T max) {
+
+    for (unsigned int i = 0; i < size; ++i) {
+        data[i] = min + static_cast<T>(rand()) /( static_cast<T>(RAND_MAX/(max - min)));
+    }
+}
+
+#endif

@@ -1,5 +1,5 @@
 /*
- * @file backendCUDAop.cu
+ * @file test_fourier.cpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,23 +27,38 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <iostream>
+
+
+#include "src/backend/cpu/backendCPU.hpp"
+
+#include <gtest/gtest.h>
+#ifdef CUDA
 #include "src/backend/cuda/backendCUDA.hpp"
+#include "tests/utils/test_utils.hpp"
+#endif
 
-#include <cassert>
+#include "src/fourier/FourierTransform.hpp"
 
-#include "cuAlgo.hpp"
+TEST(fourier, constructor_destructor_CPU) {
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
-
-    cuAlgo::normalizeVector(data, size);
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    cpu_fft_impl<float>::fourier fftOp(rows, cols);
 }
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::fliplr(Tdata * __restrict__ data, unsigned int dim,
-                                  unsigned int mRows, unsigned int mCols) {
+TEST(fourier, constructor_destructor_CPU_high) {
 
-    assert(dim == 0 || dim == 1);
-    cuAlgo::fliplr1dMatrix(data, dim, mRows , mCols);
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    FourierTransform<float, cpu_fft_impl> fftOp(rows, cols);
 }
 
+#ifdef CUDA
+TEST(fourier, constructor_destructor_CUDA) {
+
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    cuda_fft_impl<float>::fourier fftOp(rows, cols);
+}
+#endif

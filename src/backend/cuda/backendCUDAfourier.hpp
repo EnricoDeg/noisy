@@ -1,5 +1,5 @@
 /*
- * @file backendCUDAop.cu
+ * @file backendCUDAfourier.hpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,23 +27,34 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "src/backend/cuda/backendCUDA.hpp"
+#ifndef BACKENDCUDAFOURIER_HPP_
+#define BACKENDCUDAFOURIER_HPP_
 
-#include <cassert>
+#include <cufft.h>
 
-#include "cuAlgo.hpp"
+namespace cuda {
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
+    namespace details {
 
-    cuAlgo::normalizeVector(data, size);
+        template<typename T, typename ComplexT, cufftType type>
+        class fourier_impl {
+        private:
+            unsigned int m_rows;
+            unsigned int m_cols;
+            cufftHandle m_plan ;
+        public:
+            fourier_impl(unsigned int rows, unsigned int cols);
+            ~fourier_impl();
+            void fft(ComplexT * data);
+        };
+
+        template<typename T> struct fourier_helper;
+        template<> struct fourier_helper<float>  { using type = fourier_impl<float, cufftComplex, CUFFT_C2C>; };
+        template<typename Tdata>
+        using fourier = typename cuda::details::fourier_helper<Tdata>::type;
+
+    }
+
 }
 
-template <typename Tdata>
-void cuda_impl<Tdata>::op::fliplr(Tdata * __restrict__ data, unsigned int dim,
-                                  unsigned int mRows, unsigned int mCols) {
-
-    assert(dim == 0 || dim == 1);
-    cuAlgo::fliplr1dMatrix(data, dim, mRows , mCols);
-}
-
+#endif

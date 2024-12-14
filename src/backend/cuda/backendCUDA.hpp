@@ -30,6 +30,9 @@
 #ifndef BACKENDCUDA_HPP_
 #define BACKENDCUDA_HPP_
 
+#include "src/backend/cuda/backendCUDAfourier.hpp"
+#include "thrust/complex.h"
+
 template <typename Tdata>
 class cuda_impl {
  public:
@@ -37,6 +40,16 @@ class cuda_impl {
     class memory;
     class op;
     class transform;
+    // using fourier = typename cuda::details::fourier_helper<Tdata>::type;
+    using complex = thrust::complex<Tdata>;
+};
+
+template <typename Tdata>
+class cuda_fft_impl {
+ public:
+
+    using fourier = typename cuda::details::fourier_helper<Tdata>::type;
+    using complex = thrust::complex<Tdata>;
 };
 
 template<typename Tdata>
@@ -54,6 +67,8 @@ class cuda_impl<Tdata>::op {
 
 public:
     static void normalize(Tdata * __restrict__ data, unsigned int size);
+    static void fliplr(Tdata * __restrict__ data, unsigned int dim,
+                       unsigned int mRows, unsigned int mCols);
 };
 
 template<typename Tdata>
@@ -76,4 +91,6 @@ public:
 };
 
 template class cuda_impl<float>;
+template class cuda_impl<thrust::complex<float>>;
+template class cuda_fft_impl<float>;
 #endif

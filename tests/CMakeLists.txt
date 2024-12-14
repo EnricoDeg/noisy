@@ -36,11 +36,13 @@ if (ENABLE_CUDA)
 endif()
 
 # DSmatrix
+if(ENABLE_CUDA)
+    set_source_files_properties(dataStructure/test_DSmatrix.cpp PROPERTIES LANGUAGE CUDA)
+endif()
 add_executable( test_DSmatrix
                 ${SOURCE_CUDA}
                 dataStructure/test_DSmatrix.cpp
               )
-# target_include_directories(test_DSmatrix PRIVATE ${PROJECT_SOURCE_DIR})
 target_link_libraries(test_DSmatrix noisy)
 target_link_libraries(test_DSmatrix ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES})
 if (ENABLE_CUDA)
@@ -50,6 +52,42 @@ if (ENABLE_CUDA)
 endif()
 target_link_libraries(test_DSmatrix GTest::gtest_main)
 
+# backend fourier
+if(ENABLE_CUDA)
+    set_source_files_properties(backend/test_BackendFourier.cpp PROPERTIES LANGUAGE CUDA)
+endif()
+add_executable( test_BackendFourier
+                ${SOURCE_CUDA}
+                backend/test_BackendFourier.cpp
+              )
+target_link_libraries(test_BackendFourier noisy)
+target_link_libraries(test_BackendFourier ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES})
+if (ENABLE_CUDA)
+    target_link_libraries(test_BackendFourier ${CUDA_LIBRARIES})
+    set_property(TARGET test_BackendFourier PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    target_link_libraries (test_BackendFourier ${CUFFT_LIBRARIES} ${CUALGO_LIBRARIES})
+endif()
+target_link_libraries(test_BackendFourier GTest::gtest_main)
+
+# FourierTransform
+if(ENABLE_CUDA)
+    set_source_files_properties(fourier/test_FourierTransform.cpp PROPERTIES LANGUAGE CUDA)
+endif()
+add_executable( test_FourierTransform
+                ${SOURCE_CUDA}
+                fourier/test_FourierTransform.cpp
+              )
+target_link_libraries(test_FourierTransform noisy)
+target_link_libraries(test_FourierTransform ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES})
+if (ENABLE_CUDA)
+    target_link_libraries(test_FourierTransform ${CUDA_LIBRARIES})
+    set_property(TARGET test_FourierTransform PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    target_link_libraries (test_FourierTransform ${CUFFT_LIBRARIES} ${CUALGO_LIBRARIES})
+endif()
+target_link_libraries(test_FourierTransform GTest::gtest_main)
+
 # Add all tests to GoogleTest
 include(GoogleTest)
 gtest_discover_tests(test_DSmatrix)
+gtest_discover_tests(test_BackendFourier)
+gtest_discover_tests(test_FourierTransform)

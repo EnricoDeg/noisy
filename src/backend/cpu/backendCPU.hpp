@@ -30,6 +30,10 @@
 #ifndef BACKENDCPU_HPP_
 #define BACKENDCPU_HPP_
 
+#include <complex>
+
+#include "src/backend/cpu/backendCPUfourier.hpp"
+
 template <typename Tdata>
 class cpu_impl {
  public:
@@ -37,6 +41,16 @@ class cpu_impl {
     class memory;
     class op;
     class transform;
+    // using fourier = typename cpu::details::fourier_helper<Tdata>::type;
+    using complex = std::complex<Tdata>;
+};
+
+template<typename Tdata>
+class cpu_fft_impl {
+ public:
+
+    using fourier = typename cpu::details::fourier_helper<Tdata>::type;
+    using complex = std::complex<Tdata>;
 };
 
 template <typename Tdata>
@@ -54,6 +68,9 @@ class cpu_impl<Tdata>::op {
 
 public:
     static void normalize(Tdata * __restrict__ data, unsigned int size);
+
+    static void fliplr(Tdata * __restrict__ data, unsigned int dim,
+                       unsigned int mRows, unsigned int mCols);
 };
 
 template <typename Tdata>
@@ -76,4 +93,6 @@ public:
 };
 
 template class cpu_impl<float>;
+template class cpu_impl<std::complex<float>>;
+template class cpu_fft_impl<float>;
 #endif
