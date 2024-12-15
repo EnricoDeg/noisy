@@ -156,6 +156,39 @@ namespace cpu {
             }
         }
 
+        template<
+        typename T,
+        typename ComplexT,
+        typename planT,
+        planT plan_dft_2d(int, int, ComplexT*, ComplexT*, int, unsigned int),
+        void destroy_plan(planT),
+        void execute_dft(planT, ComplexT *, ComplexT *)
+        >
+        void fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan, execute_dft>::ifftshift(std::complex<T> * data)
+        {
+
+            if (m_rows % 2 == 0 && m_cols % 2 == 0) {
+
+                for (unsigned int i = 0; i < m_rows; ++i) {
+
+                    std::complex<T> * in  = data + i * m_cols ;
+                    std::complex<T> * out = data + i * m_cols;
+                    for (unsigned int j = 0; j < m_cols  / 2; ++j) {
+                        _swap(out + j, in + m_cols / 2 + j);
+                    }
+                }
+
+                for (unsigned int i = 0; i < m_rows / 2; ++i) {
+
+                    std::complex<T> * in  = data + (m_rows / 2 + i) * m_cols ;
+                    std::complex<T> * out = data + i * m_cols;
+                    for (unsigned int j = 0; j < m_cols; ++j) {
+                        _swap(out + j, in + j);
+                    }
+                }
+            }
+        }
+
         template class fourier_impl<float, fftwf_complex, fftwf_plan, fftwf_plan_dft_2d, fftwf_destroy_plan, fftwf_execute_dft>;
 
     }

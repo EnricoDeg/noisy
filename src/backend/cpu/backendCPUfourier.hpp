@@ -59,6 +59,7 @@ namespace cpu {
             void fft(std::complex<T> *data);
             void ifft(std::complex<T> *data);
             void fftshift(std::complex<T> *data);
+            void ifftshift(std::complex<T> *data);
         };
 
         template<typename T> struct fourier_helper;

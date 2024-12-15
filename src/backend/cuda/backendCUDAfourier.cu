@@ -93,6 +93,12 @@ namespace cuda {
             cuAlgo::fftshift2dMatrix(data, m_rows, m_cols);
         }
 
+        template<typename T, typename ComplexT, cufftType type>
+        void fourier_impl<T, ComplexT, type>::ifftshift(thrust::complex<T> * data) {
+
+            cuAlgo::ifftshift2dMatrix(data, m_rows, m_cols);
+        }
+
         template class fourier_impl<float, cufftComplex, CUFFT_C2C>;
 
     }

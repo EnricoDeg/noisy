@@ -49,6 +49,7 @@ namespace cuda {
             void fft(thrust::complex<T> * data);
             void ifft(thrust::complex<T> * data);
             void fftshift(thrust::complex<T> * data);
+            void ifftshift(thrust::complex<T> * data);
         };
 
         template<typename T> struct fourier_helper;
