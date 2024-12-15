@@ -27,6 +27,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#include <algorithm>
 #include <iostream>
 
 #include "src/dataStructure/dataStruct.hpp"
@@ -38,7 +39,7 @@
 #include "tests/utils/test_utils.hpp"
 #endif
 
-TEST(DSmatrix, constructor_destructor_CPU) {
+TEST(DSmatrix, constructor_default_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
@@ -47,8 +48,19 @@ TEST(DSmatrix, constructor_destructor_CPU) {
     ASSERT_TRUE(data != nullptr);
 }
 
+TEST(DSmatrix, constructor_from_matrix_CPU) {
+
+    set_seed();
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
+    generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<float, cpu_impl> copyMatrix(myMatrix);
+    test_equality(myMatrix.data(), copyMatrix.data(), rows*cols);
+}
+
 #ifdef CUDA
-TEST(DSmatrix, constructor_destructor_CUDA) {
+TEST(DSmatrix, constructor_CUDA) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
