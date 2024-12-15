@@ -42,17 +42,17 @@ void _swap(T *a, T *b) {
     *b = aux;
 }
 
-void set_seed() {
+// void set_seed() {
 
-    srand((unsigned) time(NULL));
-}
+//     srand((unsigned) time(NULL));
+// }
 
-template<typename T>
-void generate_random_values(T *data, unsigned int size, T min, T max) {
+// template<typename T>
+// void generate_random_values(T *data, unsigned int size, T min, T max) {
 
-    for (unsigned int i = 0; i < size; ++i) {
-        data[i] = min + static_cast<T>(rand()) /( static_cast<T>(RAND_MAX/(max - min)));
-    }
-}
+//     for (unsigned int i = 0; i < size; ++i) {
+//         data[i] = min + static_cast<T>(rand()) /( static_cast<T>(RAND_MAX/(max - min)));
+//     }
+// }
 
 #endif

@@ -39,13 +39,71 @@
 
 #include "src/fourier/FourierTransform.hpp"
 
+void fftshiftMatrixCPU(float * idata, float * odata,
+                       unsigned int mRows, unsigned int mCols) {
+
+	if (mRows % 2 == 0 && mCols % 2 == 0) {
+		for (unsigned int i = 0; i < mRows / 2; ++i) {
+
+			float * __restrict in = idata +  (mRows / 2 + i) * mCols ;
+			float * __restrict out = odata + i*mCols;
+			for (unsigned int j = 0; j < mCols  / 2; ++j) {
+				out[j] = in[mCols / 2 + j];
+			}
+			for (unsigned int j = mCols / 2; j < mCols; ++j) {
+				out[j] = in[j - mCols / 2];
+			}
+		}
+
+		for (unsigned int i = mRows / 2; i < mRows; ++i) {
+
+			float * __restrict in = idata +  (i - mRows / 2) * mCols ;
+			float * __restrict out = odata + i*mCols;
+			for (unsigned int j = 0; j < mCols  / 2; ++j) {
+				out[j] = in[mCols / 2 + j];
+			}
+			for (unsigned int j = mCols / 2; j < mCols; ++j) {
+				out[j] = in[j - mCols / 2];
+			}
+		}
+	} else if (mRows % 2 == 0 && mCols % 2 == 1) {
+
+		for (unsigned int i = 0; i < mRows / 2; ++i) {
+
+			float * __restrict in = idata +  (mRows / 2 + i) * mCols ;
+			float * __restrict out = odata + i*mCols;
+			for (unsigned int j = 0; j < (mCols - 1) / 2; ++j) {
+				out[j] = in[(mCols + 1) / 2 + j];
+			}
+			for (unsigned int j = (mCols - 1) / 2; j < mCols; ++j) {
+				out[j] = in[j - (mCols - 1) / 2];
+			}
+		}
+
+		for (unsigned int i = mRows / 2; i < mRows; ++i) {
+
+			float * __restrict in = idata +  (i - mRows / 2) * mCols ;
+			float * __restrict out = odata + i*mCols;
+			for (unsigned int j = 0; j < (mCols - 1) / 2; ++j) {
+				out[j] = in[(mCols + 1) / 2 + j];
+			}
+			for (unsigned int j = (mCols - 1) / 2; j < mCols; ++j) {
+				out[j] = in[j - (mCols - 1) / 2];
+			}
+		}
+	}
+}
+
 TEST(fourier, constructor_destructor_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
     FourierTransform<float, cpu_impl<float>> fftOp(rows, cols);
-    DSmatrix<std::complex<float>, cpu_impl> myMatrix(rows, cols);
-    fftOp.fft(myMatrix);
+    DSmatrix<std::complex<float>, cpu_impl> cMatrix(rows, cols);
+
+    fftOp.fftshift(cMatrix);
+
+
 }
 
 #ifdef CUDA

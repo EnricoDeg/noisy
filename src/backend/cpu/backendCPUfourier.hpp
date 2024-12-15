@@ -52,11 +52,12 @@ namespace cpu {
             planT m_plan_fft          ;
             planT m_plan_ifft         ;
             planT m_plan_inplace_fft  ;
-            planT m_plan_inplace_ifft ; 
+            planT m_plan_inplace_ifft ;
         public:
             fourier_impl(unsigned int rows, unsigned int cols);
             ~fourier_impl();
             void fft(std::complex<T> *data);
+            void fftshift(std::complex<T> *data);
         };
 
         template<typename T> struct fourier_helper;

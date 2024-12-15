@@ -28,6 +28,7 @@
  */
 
 #include "src/backend/cuda/backendCUDAfourier.hpp"
+#include "cuAlgo.hpp"
 
 namespace cuda {
 
@@ -75,6 +76,12 @@ namespace cuda {
                                     reinterpret_cast<ComplexT *>(data),
                                     reinterpret_cast<ComplexT *>(data),
                                     CUFFT_FORWARD);
+        }
+
+        template<typename T, typename ComplexT, cufftType type>
+        void fourier_impl<T, ComplexT, type>::fftshift(thrust::complex<T> * data) {
+
+            cuAlgo::fftshift2dMatrix(data, m_rows, m_cols);
         }
 
         template class fourier_impl<float, cufftComplex, CUFFT_C2C>;
