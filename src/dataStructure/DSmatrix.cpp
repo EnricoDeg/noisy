@@ -34,6 +34,7 @@
 #include "src/backend/cuda/backendCUDA.hpp"
 #endif
 
+// constructors
 template <typename Tdata, template <class> class backend>
 DSmatrix<Tdata, backend>::DSmatrix(unsigned int rows, unsigned int cols)
 : mRows(rows),
@@ -68,6 +69,7 @@ DSmatrix<Tdata, backend>::DSmatrix(const DSmatrix& inMat)
     backend<Tdata>::memory::copy(mData, inMat.mData, mRows*mCols);
 }
 
+// destructor
 template <typename Tdata, template <class> class backend>
 DSmatrix<Tdata, backend>::~DSmatrix()
 {
@@ -99,6 +101,7 @@ DSmatrix<Tdata, backend>& DSmatrix<Tdata, backend>::operator+=(const DSmatrix<Td
     return *this;
 }
 
+// inline info
 template
 < typename Tdata,
   template <class> class backend >
@@ -135,6 +138,7 @@ unsigned int DSmatrix<Tdata, backend>::size()
     return mRows * mCols;
 }
 
+// in place operations
 template <typename Tdata, template <class> class backend>
 void DSmatrix<Tdata, backend>::normalize() {
 

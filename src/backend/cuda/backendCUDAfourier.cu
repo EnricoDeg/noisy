@@ -79,6 +79,15 @@ namespace cuda {
         }
 
         template<typename T, typename ComplexT, cufftType type>
+        void fourier_impl<T, ComplexT, type>::ifft(thrust::complex<T> * data) {
+
+            fft_execute<T>::execute(m_plan,
+                                    reinterpret_cast<ComplexT *>(data),
+                                    reinterpret_cast<ComplexT *>(data),
+                                    CUFFT_INVERSE);
+        }
+
+        template<typename T, typename ComplexT, cufftType type>
         void fourier_impl<T, ComplexT, type>::fftshift(thrust::complex<T> * data) {
 
             cuAlgo::fftshift2dMatrix(data, m_rows, m_cols);

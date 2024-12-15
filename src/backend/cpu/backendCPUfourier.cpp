@@ -116,6 +116,21 @@ namespace cpu {
         void destroy_plan(planT),
         void execute_dft(planT, ComplexT *, ComplexT *)
         >
+        void fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan, execute_dft>::ifft(std::complex<T> * data)
+        {
+            execute_dft( m_plan_inplace_ifft,
+                         reinterpret_cast<ComplexT *>(data),
+                         reinterpret_cast<ComplexT *>(data));
+        }
+
+        template<
+        typename T,
+        typename ComplexT,
+        typename planT,
+        planT plan_dft_2d(int, int, ComplexT*, ComplexT*, int, unsigned int),
+        void destroy_plan(planT),
+        void execute_dft(planT, ComplexT *, ComplexT *)
+        >
         void fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan, execute_dft>::fftshift(std::complex<T> * data)
         {
 

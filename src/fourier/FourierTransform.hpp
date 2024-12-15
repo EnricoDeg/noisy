@@ -53,6 +53,12 @@ public:
         m_impl->fft(data);
     }
 
+    void ifft(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+
+        complex_type * data = inMat.data();
+        m_impl->ifft(data);
+    }
+
     void fftshift(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
 
         complex_type * data = inMat.data();

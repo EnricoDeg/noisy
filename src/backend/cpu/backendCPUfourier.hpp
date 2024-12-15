@@ -57,6 +57,7 @@ namespace cpu {
             fourier_impl(unsigned int rows, unsigned int cols);
             ~fourier_impl();
             void fft(std::complex<T> *data);
+            void ifft(std::complex<T> *data);
             void fftshift(std::complex<T> *data);
         };
 

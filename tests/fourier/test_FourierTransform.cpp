@@ -95,7 +95,7 @@ void fftshiftMatrixCPU(T * idata, T * odata,
     }
 }
 
-TEST(fourier, constructor_destructor_CPU) {
+TEST(fourier, fftshift_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;

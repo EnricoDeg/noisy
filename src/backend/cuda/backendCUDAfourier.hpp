@@ -47,6 +47,7 @@ namespace cuda {
             fourier_impl(unsigned int rows, unsigned int cols);
             ~fourier_impl();
             void fft(thrust::complex<T> * data);
+            void ifft(thrust::complex<T> * data);
             void fftshift(thrust::complex<T> * data);
         };
 
