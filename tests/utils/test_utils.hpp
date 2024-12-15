@@ -33,4 +33,10 @@
 template<typename Tdata>
 void test_check_device_results(Tdata * device_data, unsigned int size, Tdata host_ref, Tdata tolerance);
 
+template<typename Tdata>
+void test_copy_h2d(Tdata * device_data, Tdata *host_data, unsigned int size);
+
+template<typename Tdata>
+void test_copy_d2h(Tdata * host_data, Tdata *device_data, unsigned int size);
+
 #endif

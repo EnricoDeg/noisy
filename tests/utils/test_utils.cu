@@ -35,9 +35,21 @@ template<typename Tdata>
 void test_check_device_results(Tdata * device_data, unsigned int size, Tdata host_ref, Tdata tolerance) {
 
     Tdata * host_data = (Tdata *)malloc(size * sizeof(Tdata));
-    cudaMemcpy ( host_data, device_data, size *sizeof(float), cudaMemcpyDeviceToHost );
+    cudaMemcpy ( host_data, device_data, size *sizeof(Tdata), cudaMemcpyDeviceToHost );
     for (unsigned int i = 0; i < size; ++i)
         ASSERT_TRUE(std::abs(host_data[i] - host_ref) / host_ref < tolerance);
+}
+
+template<typename Tdata>
+void test_copy_h2d(Tdata * device_data, Tdata *host_data, unsigned int size) {
+
+    cudaMemcpy ( device_data, host_data, size *sizeof(Tdata), cudaMemcpyHostToDevice );
+}
+
+template<typename Tdata>
+void test_copy_d2h(Tdata * host_data, Tdata *device_data, unsigned int size) {
+
+    cudaMemcpy ( host_data, device_data, size *sizeof(Tdata), cudaMemcpyDeviceToHost );
 }
 
 template void test_check_device_results(float *, unsigned int, float, float);
