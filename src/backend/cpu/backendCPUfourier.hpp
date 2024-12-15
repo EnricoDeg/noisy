@@ -30,6 +30,7 @@
 #ifndef BACKENDCPUFOURIER_HPP_
 #define BACKENDCPUFOURIER_HPP_
 
+#include <complex>
 #include "fftw3.h"
 
 namespace cpu {
@@ -41,7 +42,8 @@ namespace cpu {
         typename ComplexT,
         typename planT,
         planT plan_dft_2d(int, int, ComplexT*, ComplexT*, int, unsigned int),
-        void destroy_plan(planT)
+        void destroy_plan(planT), 
+        void execute_dft(planT, ComplexT *, ComplexT *)
         >
         class fourier_impl {
         private:
@@ -54,15 +56,21 @@ namespace cpu {
         public:
             fourier_impl(unsigned int rows, unsigned int cols);
             ~fourier_impl();
+            void fft(std::complex<T> *data);
         };
 
         template<typename T> struct fourier_helper;
-        template<> struct fourier_helper<float>  { using type = fourier_impl<float, fftwf_complex,
-                                                                             fftwf_plan, fftwf_plan_dft_2d,
-                                                                             fftwf_destroy_plan>; };
-        template<> struct fourier_helper<double> { using type = fourier_impl<double, fftw_complex,
-                                                                             fftw_plan, fftw_plan_dft_2d,
-                                                                             fftw_destroy_plan>; };
+        template<> struct fourier_helper<float>  {
+            using type = fourier_impl<float, fftwf_complex,
+                                      fftwf_plan, fftwf_plan_dft_2d,
+                                      fftwf_destroy_plan, fftwf_execute_dft>;
+        };
+
+        template<> struct fourier_helper<double> {
+            using type = fourier_impl<double, fftw_complex,
+                                      fftw_plan, fftw_plan_dft_2d,
+                                      fftw_destroy_plan, fftw_execute_dft>;
+        };
         template<typename Tdata>
         using fourier = typename cpu::details::fourier_helper<Tdata>::type;
 

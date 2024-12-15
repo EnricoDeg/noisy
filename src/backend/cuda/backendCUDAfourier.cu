@@ -69,9 +69,12 @@ namespace cuda {
         }
 
         template<typename T, typename ComplexT, cufftType type>
-        void fourier_impl<T, ComplexT, type>::fft(ComplexT * data) {
+        void fourier_impl<T, ComplexT, type>::fft(thrust::complex<T> * data) {
 
-            fft_execute<T>::execute(m_plan, data, data, CUFFT_FORWARD);
+            fft_execute<T>::execute(m_plan,
+                                    reinterpret_cast<ComplexT *>(data),
+                                    reinterpret_cast<ComplexT *>(data),
+                                    CUFFT_FORWARD);
         }
 
         template class fourier_impl<float, cufftComplex, CUFFT_C2C>;

@@ -43,7 +43,9 @@ TEST(fourier, constructor_destructor_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    FourierTransform<float, cpu_fft_impl> fftOp(rows, cols);
+    FourierTransform<float, cpu_impl<float>> fftOp(rows, cols);
+    DSmatrix<std::complex<float>, cpu_impl> myMatrix(rows, cols);
+    fftOp.fft(myMatrix);
 }
 
 #ifdef CUDA
@@ -51,6 +53,8 @@ TEST(fourier, constructor_destructor_CUDA) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    FourierTransform<float, cuda_fft_impl> fftOp(rows, cols);
+    FourierTransform<float, cuda_impl<float>> fftOp(rows, cols);
+    DSmatrix<thrust::complex<float>, cuda_impl> myMatrix(rows, cols);
+    fftOp.fft(myMatrix);
 }
 #endif

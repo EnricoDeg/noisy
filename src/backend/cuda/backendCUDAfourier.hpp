@@ -31,6 +31,7 @@
 #define BACKENDCUDAFOURIER_HPP_
 
 #include <cufft.h>
+#include <thrust/complex.h>
 
 namespace cuda {
 
@@ -45,11 +46,13 @@ namespace cuda {
         public:
             fourier_impl(unsigned int rows, unsigned int cols);
             ~fourier_impl();
-            void fft(ComplexT * data);
+            void fft(thrust::complex<T> * data);
         };
 
         template<typename T> struct fourier_helper;
-        template<> struct fourier_helper<float>  { using type = fourier_impl<float, cufftComplex, CUFFT_C2C>; };
+        template<> struct fourier_helper<float>  {
+            using type = fourier_impl<float, cufftComplex, CUFFT_C2C>;
+        };
         template<typename Tdata>
         using fourier = typename cuda::details::fourier_helper<Tdata>::type;
 

@@ -36,21 +36,19 @@
 
 template <typename Tdata>
 class cpu_impl {
- public:
+public:
 
     class memory;
     class op;
     class transform;
-    // using fourier = typename cpu::details::fourier_helper<Tdata>::type;
     using complex = std::complex<Tdata>;
 };
 
 template<typename Tdata>
 class cpu_fft_impl {
- public:
+public:
 
     using fourier = typename cpu::details::fourier_helper<Tdata>::type;
-    using complex = std::complex<Tdata>;
 };
 
 template <typename Tdata>

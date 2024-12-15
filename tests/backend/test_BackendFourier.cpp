@@ -47,13 +47,6 @@ TEST(fourier, constructor_destructor_CPU) {
     cpu_fft_impl<float>::fourier fftOp(rows, cols);
 }
 
-TEST(fourier, constructor_destructor_CPU_high) {
-
-    unsigned int rows = 1024;
-    unsigned int cols =  512;
-    FourierTransform<float, cpu_fft_impl> fftOp(rows, cols);
-}
-
 #ifdef CUDA
 TEST(fourier, constructor_destructor_CUDA) {
 

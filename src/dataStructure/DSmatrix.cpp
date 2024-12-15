@@ -118,6 +118,6 @@ void DSmatrix<Tdata, backend>::normalize() {
 }
 
 template class DSmatrix<float, cpu_impl>;
+template class DSmatrix<std::complex<float>, cpu_impl>;
 template class DSmatrix<float, cuda_impl>;
-
-
+template class DSmatrix<thrust::complex<float>, cuda_impl>;

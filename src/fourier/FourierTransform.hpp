@@ -32,23 +32,37 @@
 
 #include "src/backend/cpu/backendCPUfourier.hpp"
 #include "src/backend/cuda/backendCUDAfourier.hpp"
-#include <memory>
+#include "src/dataStructure/dataStruct.hpp"
 
-template <typename Tdata, template <class> class  backend>
-class FourierTransform
+template <typename Tdata, template <class> class  backend,
+          template <class> class  backendM>
+class FourierTransformImpl
 {
 public:
 
-    FourierTransform(unsigned int rows, unsigned int cols) {
+    FourierTransformImpl(unsigned int rows, unsigned int cols) {
         m_impl = std::shared_ptr<fft_type>(new fft_type(rows, cols));
     }
-    ~FourierTransform() {
+    ~FourierTransformImpl() {
         m_impl.reset();
     }
 
+    void fft(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+
+        complex_type * data = inMat.data();
+        m_impl->fft(data);
+    }
+
 private:
+    using complex_type = typename backendM<Tdata>::complex;
     using fft_type = typename backend<Tdata>::fourier;
     std::shared_ptr<fft_type> m_impl;
 };
+
+template<typename T, typename backend> struct FourierTransform_helper;
+template<> struct FourierTransform_helper<float, cpu_impl<float>>  { using type = FourierTransformImpl<float, cpu_fft_impl, cpu_impl>; };
+template<> struct FourierTransform_helper<float, cuda_impl<float>>  { using type = FourierTransformImpl<float, cuda_fft_impl, cuda_impl>; };
+template<typename Tdata, typename backend>
+using FourierTransform = typename FourierTransform_helper<Tdata, backend>::type;
 
 #endif

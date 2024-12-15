@@ -40,7 +40,6 @@ class cuda_impl {
     class memory;
     class op;
     class transform;
-    // using fourier = typename cuda::details::fourier_helper<Tdata>::type;
     using complex = thrust::complex<Tdata>;
 };
 
@@ -49,7 +48,6 @@ class cuda_fft_impl {
  public:
 
     using fourier = typename cuda::details::fourier_helper<Tdata>::type;
-    using complex = thrust::complex<Tdata>;
 };
 
 template<typename Tdata>

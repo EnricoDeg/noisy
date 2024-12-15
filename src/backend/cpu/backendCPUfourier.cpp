@@ -40,9 +40,10 @@ namespace cpu {
         typename ComplexT,
         typename planT,
         planT plan_dft_2d(int, int, ComplexT*, ComplexT*, int, unsigned int),
-        void destroy_plan(planT)
+        void destroy_plan(planT),
+        void execute_dft(planT, ComplexT *, ComplexT *)
         >
-        fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan>::fourier_impl(unsigned int rows, unsigned int cols)
+        fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan, execute_dft>::fourier_impl(unsigned int rows, unsigned int cols)
         : m_rows(rows),
          m_cols(cols)
         {
@@ -77,9 +78,10 @@ namespace cpu {
         typename ComplexT,
         typename planT,
         planT plan_dft_2d(int, int, ComplexT*, ComplexT*, int, unsigned int),
-        void destroy_plan(planT)
+        void destroy_plan(planT),
+        void execute_dft(planT, ComplexT *, ComplexT *)
         >
-        fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan>::~fourier_impl()
+        fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan, execute_dft>::~fourier_impl()
         {
 
             std::cout << "Destroying plans: " << m_rows << ", " << m_cols << std::endl; 
@@ -89,7 +91,22 @@ namespace cpu {
             destroy_plan(m_plan_ifft);
         }
 
-        template class fourier_impl<float, fftwf_complex, fftwf_plan, fftwf_plan_dft_2d, fftwf_destroy_plan>;
+        template<
+        typename T,
+        typename ComplexT,
+        typename planT,
+        planT plan_dft_2d(int, int, ComplexT*, ComplexT*, int, unsigned int),
+        void destroy_plan(planT),
+        void execute_dft(planT, ComplexT *, ComplexT *)
+        >
+        void fourier_impl<T, ComplexT, planT, plan_dft_2d, destroy_plan, execute_dft>::fft(std::complex<T> * data)
+        {
+            execute_dft( m_plan_inplace_fft,
+                         reinterpret_cast<ComplexT *>(data),
+                         reinterpret_cast<ComplexT *>(data));
+        }
+
+        template class fourier_impl<float, fftwf_complex, fftwf_plan, fftwf_plan_dft_2d, fftwf_destroy_plan, fftwf_execute_dft>;
 
     }
 
