@@ -31,16 +31,11 @@ if(ENABLE_CUDA)
     include_directories(${CUALGO_INCLUDES})
 endif()
 
-if (ENABLE_CUDA)
-    set(SOURCE_CUDA utils/test_utils.cu)
-endif()
-
 # DSmatrix
 if(ENABLE_CUDA)
     set_source_files_properties(dataStructure/test_DSmatrix.cpp PROPERTIES LANGUAGE CUDA)
 endif()
 add_executable( test_DSmatrix
-                ${SOURCE_CUDA}
                 dataStructure/test_DSmatrix.cpp
               )
 target_link_libraries(test_DSmatrix noisy)
@@ -57,7 +52,6 @@ if(ENABLE_CUDA)
     set_source_files_properties(backend/test_BackendFourier.cpp PROPERTIES LANGUAGE CUDA)
 endif()
 add_executable( test_BackendFourier
-                ${SOURCE_CUDA}
                 backend/test_BackendFourier.cpp
               )
 target_link_libraries(test_BackendFourier noisy)
@@ -74,7 +68,6 @@ if(ENABLE_CUDA)
     set_source_files_properties(fourier/test_FourierTransform.cpp PROPERTIES LANGUAGE CUDA)
 endif()
 add_executable( test_FourierTransform
-                ${SOURCE_CUDA}
                 fourier/test_FourierTransform.cpp
               )
 target_link_libraries(test_FourierTransform noisy)
