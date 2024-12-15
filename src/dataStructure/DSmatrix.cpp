@@ -59,7 +59,7 @@ DSmatrix<Tdata, backend>::DSmatrix(unsigned int rows, unsigned int cols, Tdata *
 { }
 
 template <typename Tdata, template <class> class backend>
-DSmatrix<Tdata, backend>::DSmatrix(DSmatrix& inMat)
+DSmatrix<Tdata, backend>::DSmatrix(const DSmatrix& inMat)
 : mNeedAlloc(true)
 {
     mRows = inMat.mRows;
@@ -75,11 +75,35 @@ DSmatrix<Tdata, backend>::~DSmatrix()
         backend<Tdata>::memory::free(mData);
 }
 
+// operators
+
+template <typename Tdata, template <class> class backend>
+inline
+Tdata& DSmatrix<Tdata, backend>::operator()(unsigned int i, unsigned int j)
+{
+    return mData[i * mCols + j];
+}
+
+template <typename Tdata, template <class> class backend>
+inline
+Tdata  DSmatrix<Tdata,backend>::operator()(unsigned int i, unsigned int j) const
+{
+    return mData[i * mCols + j];
+}
+
+template <typename Tdata, template <class> class backend>
+DSmatrix<Tdata, backend>& DSmatrix<Tdata, backend>::operator+=(const DSmatrix<Tdata, backend>& B) {
+
+    backend<Tdata>::op::sumInPlace(mData, B.data(), mRows * mCols);
+
+    return *this;
+}
+
 template
 < typename Tdata,
   template <class> class backend >
 inline
-Tdata* DSmatrix<Tdata, backend>::data()
+Tdata* DSmatrix<Tdata, backend>::data() const
 {
     return mData;
 }

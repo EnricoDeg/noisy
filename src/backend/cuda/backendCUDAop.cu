@@ -33,6 +33,19 @@
 
 #include "cuAlgo.hpp"
 
+template<typename T>
+__global__ void sumInPlaceKernel(T            * __restrict__ data1,
+                                 const T      * __restrict__ data2,
+                                 unsigned int                size ) {
+
+	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+	while (i < size) {
+
+		data1[i] += data2[i];
+		i += gridDim.x * blockDim.x;
+	}
+}
+
 template <typename Tdata>
 void cuda_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
 
@@ -47,3 +60,13 @@ void cuda_impl<Tdata>::op::fliplr(Tdata * __restrict__ data, unsigned int dim,
     cuAlgo::fliplr1dMatrix(data, dim, mRows , mCols);
 }
 
+template <typename Tdata>
+void cuda_impl<Tdata>::op::sumInPlace(Tdata * __restrict__ data1,
+                                      const Tdata * __restrict__ data2,
+                                      unsigned int size) {
+
+    dim3 threadsPerBlock(THREADS_PER_BLOCK);
+    dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
+    sumInPlaceKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(data1, data2, size);
+    check_cuda( cudaStreamSynchronize(0) );
+}

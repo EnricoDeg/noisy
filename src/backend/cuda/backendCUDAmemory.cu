@@ -31,27 +31,17 @@
 
 #include "cuAlgo.hpp"
 
-#define THREADS_PER_BLOCK 1024
-
-__device__ __host__ int div_ceil(int numerator, int denominator)
-{
-
-	return (numerator % denominator != 0) ?
-	       (numerator / denominator+ 1  ) :
-	       (numerator / denominator     ) ;
-}
-
 template<typename T>
 __global__ void fillKernel(T            * __restrict__ data,
                            unsigned int                size,
                            T                          value) {
 
-	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-	while (i < size) {
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    while (i < size) {
 
-		data[i] = value;
-		i += gridDim.x * blockDim.x;
-	}
+        data[i] = value;
+        i += gridDim.x * blockDim.x;
+    }
 }
 
 template <typename Tdata>

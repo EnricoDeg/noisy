@@ -1,5 +1,5 @@
 /*
- * @file dataStruct.hpp
+ * @file backendCUDAutils.hpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,44 +27,15 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef DATASTRUCT_HPP_
-#define DATASTRUCT_HPP_
+#ifndef BACKENDCUDAUTILS_HPP_
+#define BACKENDCUDAUTILS_HPP_
 
-struct t_dims {
-    unsigned int rows;
-    unsigned int cols;
-};
-typedef struct t_dims t_dims;
-
-template <typename Tdata, template <class> class  backend>
-class DSmatrix
+__device__ __host__ inline int div_ceil(int numerator, int denominator)
 {
-public:
-    // constructors
-    DSmatrix(unsigned int rows, unsigned int cols);
-    DSmatrix(unsigned int rows, unsigned int cols, Tdata value);
-    DSmatrix(unsigned int rows, unsigned int cols, Tdata *ptr);
-    DSmatrix(const DSmatrix& inMat);
-    // destructor
-    ~DSmatrix();
-    // operators
-    DSmatrix<Tdata, backend>& operator+=(const DSmatrix<Tdata, backend>& B);
-    Tdata& operator()(unsigned int i, unsigned int j);
-    Tdata operator()(unsigned int i, unsigned int j) const;
-    // inline info
-    Tdata * data() const;
-    Tdata * begin();
-    Tdata * end();
-    t_dims dims();
-    unsigned int size();
-    // in place operations
-    void normalize();
 
-private:
-    unsigned int mRows;
-    unsigned int mCols;
-    bool mNeedAlloc;
-    Tdata* mData;
-};
+	return (numerator % denominator != 0) ?
+	       (numerator / denominator+ 1  ) :
+	       (numerator / denominator     ) ;
+}
 
 #endif

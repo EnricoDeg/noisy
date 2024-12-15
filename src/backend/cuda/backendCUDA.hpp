@@ -30,6 +30,8 @@
 #ifndef BACKENDCUDA_HPP_
 #define BACKENDCUDA_HPP_
 
+#include "src/backend/cuda/backendCUDAutils.hpp"
+#include "src/backend/cuda/backendCUDAparams.hpp"
 #include "src/backend/cuda/backendCUDAfourier.hpp"
 #include "thrust/complex.h"
 
@@ -67,6 +69,9 @@ public:
     static void normalize(Tdata * __restrict__ data, unsigned int size);
     static void fliplr(Tdata * __restrict__ data, unsigned int dim,
                        unsigned int mRows, unsigned int mCols);
+    static void sumInPlace(Tdata * __restrict__ data1,
+                           const Tdata * __restrict__ data2,
+                           unsigned int size);
 };
 
 template<typename Tdata>

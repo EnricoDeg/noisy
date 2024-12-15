@@ -73,3 +73,12 @@ void cpu_impl<Tdata>::op::fliplr(Tdata * __restrict__ data, unsigned int dim,
         }
     }
 }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::op::sumInPlace(Tdata * __restrict__ data1,
+                                     const Tdata * __restrict__ data2,
+                                     unsigned int size) {
+
+    for (unsigned int i = 0; i < size; ++i)
+        data1[i] += data2[i];
+}

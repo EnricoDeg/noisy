@@ -67,6 +67,10 @@ class cpu_impl<Tdata>::op {
 public:
     static void normalize(Tdata * __restrict__ data, unsigned int size);
 
+    static void sumInPlace(Tdata * __restrict__ data1,
+                           const Tdata * __restrict__ data2,
+                           unsigned int size);
+
     static void fliplr(Tdata * __restrict__ data, unsigned int dim,
                        unsigned int mRows, unsigned int mCols);
 };

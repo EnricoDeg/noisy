@@ -1,5 +1,5 @@
 /*
- * @file dataStruct.hpp
+ * @file backendCUDAparams.hpp
  *
  * @copyright Copyright (C) 2024 Enrico Degregori <enrico.degregori@gmail.com>
  *
@@ -27,44 +27,9 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef DATASTRUCT_HPP_
-#define DATASTRUCT_HPP_
+#ifndef BACKENDCUDAPARAMS_HPP_
+#define BACKENDCUDAPARAMS_HPP_
 
-struct t_dims {
-    unsigned int rows;
-    unsigned int cols;
-};
-typedef struct t_dims t_dims;
-
-template <typename Tdata, template <class> class  backend>
-class DSmatrix
-{
-public:
-    // constructors
-    DSmatrix(unsigned int rows, unsigned int cols);
-    DSmatrix(unsigned int rows, unsigned int cols, Tdata value);
-    DSmatrix(unsigned int rows, unsigned int cols, Tdata *ptr);
-    DSmatrix(const DSmatrix& inMat);
-    // destructor
-    ~DSmatrix();
-    // operators
-    DSmatrix<Tdata, backend>& operator+=(const DSmatrix<Tdata, backend>& B);
-    Tdata& operator()(unsigned int i, unsigned int j);
-    Tdata operator()(unsigned int i, unsigned int j) const;
-    // inline info
-    Tdata * data() const;
-    Tdata * begin();
-    Tdata * end();
-    t_dims dims();
-    unsigned int size();
-    // in place operations
-    void normalize();
-
-private:
-    unsigned int mRows;
-    unsigned int mCols;
-    bool mNeedAlloc;
-    Tdata* mData;
-};
+#define THREADS_PER_BLOCK 1024
 
 #endif
