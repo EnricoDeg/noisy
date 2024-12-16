@@ -53,10 +53,26 @@ public:
         m_impl->fft(data);
     }
 
+    void fftWithShifts(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+
+        complex_type * data = inMat.data();
+        m_impl->ifftshift(data);
+        m_impl->fft(data);
+        m_impl->fftshift(data);
+    }
+
     void ifft(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
 
         complex_type * data = inMat.data();
         m_impl->ifft(data);
+    }
+
+    void ifftWithShifts(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+
+        complex_type * data = inMat.data();
+        m_impl->ifftshift(data);
+        m_impl->ifft(data);
+        m_impl->fftshift(data);
     }
 
     void fftshift(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
