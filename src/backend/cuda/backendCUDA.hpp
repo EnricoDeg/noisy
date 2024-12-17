@@ -93,7 +93,28 @@ public:
                          unsigned int  mCols );
 };
 
+template <typename Tdata>
+class cuda_complex_impl {
+public:
+
+    class op;
+    using complex = thrust::complex<Tdata>;
+};
+
+template <typename Tdata>
+class cuda_complex_impl<Tdata>::op {
+
+public:
+    static void corrComplex(thrust::complex<Tdata> * __restrict__ dataIn1,
+                            thrust::complex<Tdata> * __restrict__ dataIn2,
+                            thrust::complex<Tdata> * __restrict__ dataOut,
+                            unsigned int size);
+};
+
 template class cuda_impl<float>;
 template class cuda_impl<thrust::complex<float>>;
 template class cuda_fft_impl<float>;
+
+template class cuda_complex_impl<float>;
+
 #endif

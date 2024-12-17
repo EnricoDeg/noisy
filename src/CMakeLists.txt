@@ -15,6 +15,7 @@ set(SOURCE_EXE  backend/cpu/backendCPUmemory.cpp
                 backend/cpu/backendCPUop.cpp
                 backend/cpu/backendCPUtransform.cpp
                 backend/cpu/backendCPUfourier.cpp
+                backend/cpu/backendCPUcomplex.cpp
                 dataStructure/DSmatrix.cpp
                 transform/transformMatrix.cpp)
 
@@ -28,7 +29,8 @@ if (ENABLE_CUDA)
     set(SOURCE_CUDA backend/cuda/backendCUDAmemory.cu
                     backend/cuda/backendCUDAop.cu
                     backend/cuda/backendCUDAtransform.cu
-                    backend/cuda/backendCUDAfourier.cu)
+                    backend/cuda/backendCUDAfourier.cu
+                    backend/cuda/backendCUDAcomplex.cu)
 endif()
 
 add_library(noisy STATIC ${SOURCE_CUDA} ${SOURCE_EXE})

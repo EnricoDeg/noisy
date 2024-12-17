@@ -94,7 +94,28 @@ public:
                          unsigned int  mCols );
 };
 
+template <typename Tdata>
+class cpu_complex_impl {
+public:
+
+    class op;
+    using complex = std::complex<Tdata>;
+};
+
+template <typename Tdata>
+class cpu_complex_impl<Tdata>::op {
+
+public:
+    static void corrComplex(std::complex<Tdata> * __restrict__ dataIn1,
+                            std::complex<Tdata> * __restrict__ dataIn2,
+                            std::complex<Tdata> * __restrict__ dataOut,
+                            unsigned int size);
+};
+
 template class cpu_impl<float>;
 template class cpu_impl<std::complex<float>>;
 template class cpu_fft_impl<float>;
+
+template class cpu_complex_impl<float>;
+
 #endif
