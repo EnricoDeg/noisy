@@ -34,11 +34,15 @@
 #include "src/backend/cuda/backendCUDAfourier.hpp"
 #include "src/dataStructure/dataStruct.hpp"
 
-template <typename Tdata, template <class> class  backend,
-          template <class> class  backendM>
+template <typename Tdata,
+          template <class> class  backend,
+          template <class> class  backendM,
+          template <class> class  backendC>
 class FourierTransformImpl
 {
 public:
+
+    using complex_type = typename backendC<Tdata>::complex;
 
     FourierTransformImpl(unsigned int rows, unsigned int cols) {
         m_impl = std::shared_ptr<fft_type>(new fft_type(rows, cols));
@@ -47,13 +51,13 @@ public:
         m_impl.reset();
     }
 
-    void fft(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+    void fft(DSmatrix<complex_type, backendM>& inMat) {
 
         complex_type * data = inMat.data();
         m_impl->fft(data);
     }
 
-    void fftWithShifts(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+    void fftWithShifts(DSmatrix<complex_type, backendM>& inMat) {
 
         complex_type * data = inMat.data();
         m_impl->ifftshift(data);
@@ -61,13 +65,13 @@ public:
         m_impl->fftshift(data);
     }
 
-    void ifft(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+    void ifft(DSmatrix<complex_type, backendM>& inMat) {
 
         complex_type * data = inMat.data();
         m_impl->ifft(data);
     }
 
-    void ifftWithShifts(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+    void ifftWithShifts(DSmatrix<complex_type, backendM>& inMat) {
 
         complex_type * data = inMat.data();
         m_impl->ifftshift(data);
@@ -75,27 +79,35 @@ public:
         m_impl->fftshift(data);
     }
 
-    void fftshift(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+    void fftshift(DSmatrix<complex_type, backendM>& inMat) {
 
         complex_type * data = inMat.data();
         m_impl->fftshift(data);
     }
 
-    void ifftshift(DSmatrix<typename backendM<Tdata>::complex, backendM>& inMat) {
+    void ifftshift(DSmatrix<complex_type, backendM>& inMat) {
 
         complex_type * data = inMat.data();
         m_impl->ifftshift(data);
+    }
+
+    void corrFF2F( const DSmatrix<complex_type, backendM>& A ,
+                   const DSmatrix<complex_type, backendM>& B ,
+                         DSmatrix<complex_type, backendM>& result) {
+
+        assert(A.size() == B.size());
+        assert(A.size() == result.size());
+        backendC<Tdata>::op::corrComplex(A.data(), B.data(), result.data(), A.size());
     }
 
 private:
-    using complex_type = typename backendM<Tdata>::complex;
     using fft_type = typename backend<Tdata>::fourier;
     std::shared_ptr<fft_type> m_impl;
 };
 
 template<typename T, typename backend> struct FourierTransform_helper;
-template<> struct FourierTransform_helper<float, cpu_impl<float>>  { using type = FourierTransformImpl<float, cpu_fft_impl, cpu_impl>; };
-template<> struct FourierTransform_helper<float, cuda_impl<float>>  { using type = FourierTransformImpl<float, cuda_fft_impl, cuda_impl>; };
+template<> struct FourierTransform_helper<float, cpu_impl<float>>  { using type = FourierTransformImpl<float, cpu_fft_impl, cpu_impl, cpu_complex_impl>; };
+template<> struct FourierTransform_helper<float, cuda_impl<float>>  { using type = FourierTransformImpl<float, cuda_fft_impl, cuda_impl, cuda_complex_impl>; };
 template<typename Tdata, typename backend>
 using FourierTransform = typename FourierTransform_helper<Tdata, backend>::type;
 
