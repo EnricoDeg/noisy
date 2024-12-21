@@ -145,6 +145,12 @@ void DSmatrix<Tdata, backend>::normalize() {
     backend<Tdata>::op::normalize(mData, mRows * mCols);
 }
 
+template <typename Tdata, template <class> class backend>
+void DSmatrix<Tdata, backend>::normSize() {
+
+    backend<Tdata>::op::divScalarInPlace(mData, mRows * mCols, Tdata(mRows * mCols));
+}
+
 template class DSmatrix<float, cpu_impl>;
 template class DSmatrix<std::complex<float>, cpu_impl>;
 template class DSmatrix<float, cuda_impl>;

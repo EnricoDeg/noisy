@@ -69,6 +69,7 @@ public:
 
         complex_type * data = inMat.data();
         m_impl->ifft(data);
+        inMat.normSize();
     }
 
     void ifftWithShifts(DSmatrix<complex_type, backendM>& inMat) {

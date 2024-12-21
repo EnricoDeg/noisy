@@ -59,6 +59,7 @@ public:
     unsigned int size();
     // in place operations
     void normalize();
+    void normSize();
 
 private:
     unsigned int mRows;

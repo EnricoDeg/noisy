@@ -73,6 +73,10 @@ public:
 
     static void fliplr(Tdata * __restrict__ data, unsigned int dim,
                        unsigned int mRows, unsigned int mCols);
+
+    static void divScalarInPlace(Tdata * __restrict__ data ,
+                                 unsigned int         size ,
+                                 Tdata                value);
 };
 
 template <typename Tdata>
