@@ -47,6 +47,19 @@ __global__ void sumInPlaceKernel(T            * __restrict__ data1,
 }
 
 template<typename T>
+__global__ void prodInPlaceKernel(T            * __restrict__ data1,
+                                  const T      * __restrict__ data2,
+                                  unsigned int                size ) {
+
+	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+	while (i < size) {
+
+		data1[i] *= data2[i];
+		i += gridDim.x * blockDim.x;
+	}
+}
+
+template<typename T>
 __global__ void divScalarInPlaceKernel(T            * __restrict__ data  ,
                                        unsigned int                size  ,
                                        T                           scalar) {
@@ -81,6 +94,17 @@ void cuda_impl<Tdata>::op::sumInPlace(Tdata * __restrict__ data1,
     dim3 threadsPerBlock(THREADS_PER_BLOCK);
     dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
     sumInPlaceKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(data1, data2, size);
+    check_cuda( cudaStreamSynchronize(0) );
+}
+
+template <typename Tdata>
+void cuda_impl<Tdata>::op::prodInPlace(Tdata * __restrict__ data1,
+                                       const Tdata * __restrict__ data2,
+                                       unsigned int size) {
+
+    dim3 threadsPerBlock(THREADS_PER_BLOCK);
+    dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
+    prodInPlaceKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(data1, data2, size);
     check_cuda( cudaStreamSynchronize(0) );
 }
 

@@ -84,6 +84,15 @@ void cpu_impl<Tdata>::op::sumInPlace(Tdata * __restrict__ data1,
 }
 
 template <typename Tdata>
+void cpu_impl<Tdata>::op::prodInPlace(Tdata * __restrict__ data1,
+                                     const Tdata * __restrict__ data2,
+                                     unsigned int size) {
+
+    for (unsigned int i = 0; i < size; ++i)
+        data1[i] *= data2[i];
+}
+
+template <typename Tdata>
 void cpu_impl<Tdata>::op::divScalarInPlace(Tdata * __restrict__ data ,
                                            unsigned int         size ,
                                            Tdata                value) {

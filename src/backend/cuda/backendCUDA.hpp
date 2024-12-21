@@ -72,6 +72,9 @@ public:
     static void sumInPlace(Tdata * __restrict__ data1,
                            const Tdata * __restrict__ data2,
                            unsigned int size);
+    static void prodInPlace(Tdata * __restrict__ data1,
+                           const Tdata * __restrict__ data2,
+                           unsigned int size);
     static void divScalarInPlace(Tdata * __restrict__ data ,
                                  unsigned int         size ,
                                  Tdata                value);

@@ -86,6 +86,22 @@ TEST(DSmatrix, plus_equal_CPU) {
             ASSERT_EQ(Matrix1(i,j), Matrix2(i,j)+Matrix3(i,j));
 }
 
+TEST(DSmatrix, prod_equal_CPU) {
+
+    set_seed();
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    DSmatrix<float, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<float, cpu_impl> Matrix2(rows, cols);
+    generate_random_values(Matrix2.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<float, cpu_impl> Matrix3 = Matrix1;
+    Matrix1 *= Matrix2;
+    for (unsigned int i = 0; i < rows; ++i)
+        for (unsigned int j = 0; j < cols; ++j)
+            ASSERT_EQ(Matrix1(i,j), Matrix2(i,j)*Matrix3(i,j));
+}
+
 #ifdef CUDA
 TEST(DSmatrix, constructor_CUDA) {
 

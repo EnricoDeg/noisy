@@ -49,6 +49,7 @@ public:
     ~DSmatrix();
     // operators
     DSmatrix<Tdata, backend>& operator+=(const DSmatrix<Tdata, backend>& B);
+    DSmatrix<Tdata, backend>& operator*=(const DSmatrix<Tdata, backend>& B);
     Tdata& operator()(unsigned int i, unsigned int j);
     Tdata operator()(unsigned int i, unsigned int j) const;
     // inline info

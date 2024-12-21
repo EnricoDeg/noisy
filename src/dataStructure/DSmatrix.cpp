@@ -101,6 +101,14 @@ DSmatrix<Tdata, backend>& DSmatrix<Tdata, backend>::operator+=(const DSmatrix<Td
     return *this;
 }
 
+template <typename Tdata, template <class> class backend>
+DSmatrix<Tdata, backend>& DSmatrix<Tdata, backend>::operator*=(const DSmatrix<Tdata, backend>& B) {
+
+    backend<Tdata>::op::prodInPlace(mData, B.data(), mRows * mCols);
+
+    return *this;
+}
+
 // inline info
 template
 < typename Tdata,
