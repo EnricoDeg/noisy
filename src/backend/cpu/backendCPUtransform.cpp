@@ -121,3 +121,33 @@ void cpu_impl<Tdata>::transform::upsample(Tdata * __restrict__ inMat,
         return;
     }
 }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::transform::pad(Tdata * __restrict__ in   ,
+                                     Tdata * __restrict__ out  ,
+                                     unsigned int         nRows,
+                                     unsigned int         nCols,
+                                     unsigned int         mRows,
+                                     unsigned int         mCols) {
+
+    assert(nRows >= mRows);
+    assert(nCols >= mCols);
+
+    // set everything to zero
+    for (unsigned int i = 0; i < nRows; ++i) {
+        Tdata * __restrict outRow  = out  + i * nCols ;
+        for (unsigned int j = 0; j < nCols; ++j) {
+            outRow[j] = static_cast<Tdata>(0);
+        }
+    }
+
+    // copy input to output (everywhere else zeros)
+    unsigned int offsetRows = ( nRows - mRows ) / 2 + ( nRows - mRows ) % 2;
+    unsigned int offsetCols = ( nCols - mCols ) / 2 + ( nCols - mCols ) % 2;
+    for (unsigned int i = offsetRows; i < offsetRows + mRows; ++i) {
+
+        const Tdata * __restrict inRow  = in  + (i - offsetRows) * mCols ;
+        Tdata * __restrict outRow = out + i*nCols;
+        std::memcpy(outRow + offsetCols, inRow, mCols * sizeof(Tdata));
+    }
+}

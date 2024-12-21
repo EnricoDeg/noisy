@@ -61,3 +61,14 @@ void cuda_impl<Tdata>::transform::upsample(Tdata * __restrict__ in,
                              mRows ,
                              mCols );
 }
+
+template <typename Tdata>
+void cuda_impl<Tdata>::transform::pad(Tdata * __restrict__ in   ,
+                                      Tdata * __restrict__ out  ,
+                                      unsigned int         nRows,
+                                      unsigned int         nCols,
+                                      unsigned int         mRows,
+                                      unsigned int         mCols) {
+
+    cuAlgo::padarray2dMatrix(in, out, nRows, nCols, mRows, mCols);
+}

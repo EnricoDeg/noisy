@@ -92,6 +92,12 @@ public:
                          unsigned int  nzeros,
                          unsigned int  mRows ,
                          unsigned int  mCols );
+    static void pad(Tdata * __restrict__ in   ,
+                    Tdata * __restrict__ out  ,
+                    unsigned int         nRows,
+                    unsigned int         nCols,
+                    unsigned int         mRows,
+                    unsigned int         mCols);
 };
 
 template <typename Tdata>
@@ -107,6 +113,10 @@ class cpu_complex_impl<Tdata>::op {
 
 public:
     static void corrComplex(std::complex<Tdata> * __restrict__ dataIn1,
+                            std::complex<Tdata> * __restrict__ dataIn2,
+                            std::complex<Tdata> * __restrict__ dataOut,
+                            unsigned int size);
+    static void convComplex(std::complex<Tdata> * __restrict__ dataIn1,
                             std::complex<Tdata> * __restrict__ dataIn2,
                             std::complex<Tdata> * __restrict__ dataOut,
                             unsigned int size);
