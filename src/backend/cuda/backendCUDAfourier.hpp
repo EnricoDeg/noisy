@@ -56,6 +56,9 @@ namespace cuda {
         template<> struct fourier_helper<float>  {
             using type = fourier_impl<float, cufftComplex, CUFFT_C2C>;
         };
+        template<> struct fourier_helper<double>  {
+            using type = fourier_impl<double, cufftDoubleComplex, CUFFT_Z2Z>;
+        };
         template<typename Tdata>
         using fourier = typename cuda::details::fourier_helper<Tdata>::type;
 

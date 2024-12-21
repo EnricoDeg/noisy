@@ -100,6 +100,7 @@ namespace cuda {
         }
 
         template class fourier_impl<float, cufftComplex, CUFFT_C2C>;
+        template class fourier_impl<double, cufftDoubleComplex, CUFFT_Z2Z>;
 
     }
 

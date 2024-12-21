@@ -102,14 +102,33 @@ TEST(DSmatrix, prod_equal_CPU) {
             ASSERT_EQ(Matrix1(i,j), Matrix2(i,j)*Matrix3(i,j));
 }
 
-TEST(DSmatrix, fliplr_dim0_CPU) {
+template <class T>
+class DSmatrixTemplate : public testing::Test {};
+typedef ::testing::Types<float, double> MyTypesCPU ;
+TYPED_TEST_CASE(DSmatrixTemplate, MyTypesCPU);
+
+TYPED_TEST(DSmatrixTemplate, fliplr_dim0_CPU) {
 
     set_seed();
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> Matrix1(rows, cols);
-    generate_random_values(Matrix1.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> Matrix2 = Matrix1;
+    DSmatrix<TypeParam, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> Matrix2 = Matrix1;
+    Matrix2.fliplr(0);
+    for (unsigned int i = 0; i < rows; ++i)
+        for (unsigned int j = 0; j < cols; ++j)
+            ASSERT_EQ(Matrix1(i,j), Matrix2(rows-1-i,j));
+}
+
+TYPED_TEST(DSmatrixTemplate, fliplr_complex_dim0_CPU) {
+
+    set_seed();
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    DSmatrix<std::complex<TypeParam>, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, TypeParam(-10.0f), TypeParam(-10.0f));
+    DSmatrix<std::complex<TypeParam>, cpu_impl> Matrix2 = Matrix1;
     Matrix2.fliplr(0);
     for (unsigned int i = 0; i < rows; ++i)
         for (unsigned int j = 0; j < cols; ++j)
@@ -128,6 +147,17 @@ TEST(DSmatrix, fliplr_dim1_CPU) {
     for (unsigned int i = 0; i < rows; ++i)
         for (unsigned int j = 0; j < cols; ++j)
             ASSERT_EQ(Matrix1(i,j), Matrix2(i,cols-1-j));
+}
+
+TEST(DSmatrix, normalize_CPU) {
+
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    DSmatrix<float, cpu_impl> Matrix1(rows, cols, 1.0);
+    Matrix1.normalize();
+    for (unsigned int i = 0; i < rows; ++i)
+        for (unsigned int j = 0; j < cols; ++j)
+            ASSERT_EQ(Matrix1(i,j), 1.0f / (rows * cols));
 }
 
 #ifdef CUDA

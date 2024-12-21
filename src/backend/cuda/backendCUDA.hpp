@@ -141,9 +141,13 @@ public:
 };
 
 template class cuda_impl<float>;
+template class cuda_impl<double>;
 template class cuda_impl<thrust::complex<float>>;
-template class cuda_fft_impl<float>;
+template class cuda_impl<thrust::complex<double>>;
 
+template class cuda_fft_impl<float>;
+template class cuda_fft_impl<double>;
 template class cuda_complex_impl<float>;
+template class cuda_complex_impl<double>;
 
 #endif

@@ -48,9 +48,10 @@ void generate_random_values(std::complex<T> *data, unsigned int size, T min, T m
 
     for (unsigned int i = 0; i < size; ++i) {
         data[i] = std::complex<T>(min + static_cast<T>(rand()) /( static_cast<T>(RAND_MAX/(max - min))),
-                                  min + static_cast<T>(rand()) /( static_cast<T>(RAND_MAX/(max - min))));
+        min + static_cast<T>(rand()) /( static_cast<T>(RAND_MAX/(max - min))));
     }
 }
+
 
 template<typename T>
 void test_equality(T *result, T *reference, unsigned int size) {

@@ -144,9 +144,14 @@ public:
 };
 
 template class cpu_impl<float>;
+template class cpu_impl<double>;
 template class cpu_impl<std::complex<float>>;
+template class cpu_impl<std::complex<double>>;
+
 template class cpu_fft_impl<float>;
+template class cpu_fft_impl<double>;
 
 template class cpu_complex_impl<float>;
+template class cpu_complex_impl<double>;
 
 #endif
