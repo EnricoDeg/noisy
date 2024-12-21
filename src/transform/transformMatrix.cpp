@@ -73,3 +73,17 @@ void upsample(const DSmatrix<Tdata, backend>& inMat  ,
     Tdata * __restrict__ outData = outMat.data();
     backend<Tdata>::transform::upsample(inData, outData, dim, nzeros, dims.rows, dims.cols);
 }
+
+template <typename Tdata, template <class> class  backend>
+void pad(const DSmatrix<Tdata, backend>& inMat ,
+               DSmatrix<Tdata, backend>& outMat) {
+
+    t_dims dims = inMat.dims();
+    t_dims dimsOut = outMat.dims();
+
+    Tdata * __restrict__ inData = inMat.data();
+    Tdata * __restrict__ outData = outMat.data();
+    backend<Tdata>::transform::pad(inData, outData,
+                                   dimsOut.rows, dimsOut.cols,
+                                   dims.rows, dims.cols);
+}

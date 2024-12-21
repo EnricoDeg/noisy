@@ -116,8 +116,17 @@ private:
 };
 
 template<typename T, typename backend> struct FourierTransform_helper;
-template<> struct FourierTransform_helper<float, cpu_impl<float>>  { using type = FourierTransformImpl<float, cpu_fft_impl, cpu_impl, cpu_complex_impl>; };
-template<> struct FourierTransform_helper<float, cuda_impl<float>>  { using type = FourierTransformImpl<float, cuda_fft_impl, cuda_impl, cuda_complex_impl>; };
+
+template<>
+struct FourierTransform_helper<float, cpu_impl<float>> {
+    using type = FourierTransformImpl<float, cpu_fft_impl, cpu_impl, cpu_complex_impl>;
+};
+
+template<>
+struct FourierTransform_helper<float, cuda_impl<float>> {
+    using type = FourierTransformImpl<float, cuda_fft_impl, cuda_impl, cuda_complex_impl>;
+};
+
 template<typename Tdata, typename backend>
 using FourierTransform = typename FourierTransform_helper<Tdata, backend>::type;
 
