@@ -100,6 +100,15 @@ public:
         backendC<Tdata>::op::corrComplex(A.data(), B.data(), result.data(), A.size());
     }
 
+    void convFF2F( const DSmatrix<complex_type, backendM>& A ,
+                   const DSmatrix<complex_type, backendM>& B ,
+                         DSmatrix<complex_type, backendM>& result) {
+
+        assert(A.size() == B.size());
+        assert(A.size() == result.size());
+        backendC<Tdata>::op::convComplex(A.data(), B.data(), result.data(), A.size());
+    }
+
 private:
     using fft_type = typename backend<Tdata>::fourier;
     std::shared_ptr<fft_type> m_impl;

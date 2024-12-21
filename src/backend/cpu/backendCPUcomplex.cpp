@@ -42,3 +42,13 @@ void cpu_complex_impl<Tdata>::op::corrComplex(std::complex<Tdata> * __restrict__
     for (unsigned int i = 0; i < size; ++i)
         dataOut[i] = dataIn1[i] * std::conj(dataIn2[i]);
 }
+
+template <typename Tdata>
+void cpu_complex_impl<Tdata>::op::convComplex(std::complex<Tdata> * __restrict__ dataIn1,
+                                              std::complex<Tdata> * __restrict__ dataIn2,
+                                              std::complex<Tdata> * __restrict__ dataOut,
+                                              unsigned int size) {
+
+    for (unsigned int i = 0; i < size; ++i)
+        dataOut[i] = dataIn1[i] * dataIn2[i];
+}

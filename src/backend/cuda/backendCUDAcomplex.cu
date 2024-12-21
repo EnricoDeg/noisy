@@ -47,6 +47,20 @@ __global__ void corrComplexKernel(thrust::complex<Tdata> * __restrict__ dataIn1,
 	}
 }
 
+template<typename Tdata>
+__global__ void convComplexKernel(thrust::complex<Tdata> * __restrict__ dataIn1,
+                                  thrust::complex<Tdata> * __restrict__ dataIn2,
+                                  thrust::complex<Tdata> * __restrict__ dataOut,
+                                  unsigned int size) {
+
+	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+	while (i < size) {
+
+		dataOut[i] = dataIn1[i] * dataIn2[i];
+		i += gridDim.x * blockDim.x;
+	}
+}
+
 template <typename Tdata>
 void cuda_complex_impl<Tdata>::op::corrComplex(thrust::complex<Tdata> * __restrict__ dataIn1,
                                                thrust::complex<Tdata> * __restrict__ dataIn2,
@@ -56,5 +70,17 @@ void cuda_complex_impl<Tdata>::op::corrComplex(thrust::complex<Tdata> * __restri
     dim3 threadsPerBlock(THREADS_PER_BLOCK);
     dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
     corrComplexKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(dataIn1, dataIn2, dataOut, size);
+    check_cuda( cudaStreamSynchronize(0) );
+}
+
+template <typename Tdata>
+void cuda_complex_impl<Tdata>::op::convComplex(thrust::complex<Tdata> * __restrict__ dataIn1,
+                                               thrust::complex<Tdata> * __restrict__ dataIn2,
+                                               thrust::complex<Tdata> * __restrict__ dataOut,
+                                               unsigned int size) {
+
+    dim3 threadsPerBlock(THREADS_PER_BLOCK);
+    dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
+    convComplexKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(dataIn1, dataIn2, dataOut, size);
     check_cuda( cudaStreamSynchronize(0) );
 }
