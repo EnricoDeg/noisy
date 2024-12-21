@@ -112,6 +112,9 @@ public:
                           Tdata * __restrict__ outData,
                           unsigned int         mRows  ,
                           unsigned int         mCols  );
+    static void normL2(Tdata * __restrict__ inData ,
+                       Tdata * __restrict__ outData,
+                       unsigned int         size   );
 };
 
 template <typename Tdata>

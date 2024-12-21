@@ -58,4 +58,8 @@ template <typename Tdata, template <class> class  backend>
 void transpose(const DSmatrix<Tdata, backend>& inMat ,
                      DSmatrix<Tdata, backend>& outMat);
 
+template <typename Tdata, template <class> class  backend>
+void normL2(const DSmatrix<Tdata, backend>&  inMat,
+                  Tdata                     *out  );
+
 #endif

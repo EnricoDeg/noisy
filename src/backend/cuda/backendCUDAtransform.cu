@@ -93,3 +93,11 @@ void cuda_impl<Tdata>::transform::transpose(Tdata * __restrict__ inData ,
 
     cuAlgo::transposeMatrix(inData, outData, mCols, mRows);
 }
+
+template <typename Tdata>
+void cuda_impl<Tdata>::transform::normL2(Tdata * __restrict__ inData ,
+                                         Tdata * __restrict__ outData,
+                                         unsigned int         size   ) {
+
+    cuAlgo::normL2Vector(inData, outData, size);
+}

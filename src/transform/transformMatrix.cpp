@@ -120,3 +120,10 @@ void dshear(const DSmatrix<Tdata, backend>& inMat ,
 
     backend<Tdata>::transform::transpose(inData, outData, dims.rows, dims.cols);
 }
+
+template <typename Tdata, template <class> class  backend>
+void transpose(const DSmatrix<Tdata, backend>&  inMat,
+                     Tdata                     *out  ) {
+
+    backend<Tdata>::transform::normL2(inMat.data(), out, inMat.size());
+}

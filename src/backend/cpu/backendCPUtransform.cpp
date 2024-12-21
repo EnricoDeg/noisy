@@ -226,3 +226,13 @@ void cpu_impl<Tdata>::transform::transpose(Tdata * __restrict__ inData ,
         }
     }
 }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::transform::normL2(Tdata * __restrict__ inData ,
+                                        Tdata * __restrict__ outData,
+                                        unsigned int         size   ) {
+
+    *outData = 0;
+    for (unsigned int i = 0; i < size; ++i)
+        *outData += std::abs(inData[i]) * std::abs(inData[i]);
+}
