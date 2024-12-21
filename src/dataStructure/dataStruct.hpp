@@ -61,6 +61,7 @@ public:
     // in place operations
     void normalize();
     void normSize();
+    void fliplr(unsigned int dim);
 
 private:
     unsigned int mRows;

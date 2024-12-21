@@ -102,14 +102,57 @@ TEST(DSmatrix, prod_equal_CPU) {
             ASSERT_EQ(Matrix1(i,j), Matrix2(i,j)*Matrix3(i,j));
 }
 
+TEST(DSmatrix, fliplr_dim0_CPU) {
+
+    set_seed();
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    DSmatrix<float, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<float, cpu_impl> Matrix2 = Matrix1;
+    Matrix2.fliplr(0);
+    for (unsigned int i = 0; i < rows; ++i)
+        for (unsigned int j = 0; j < cols; ++j)
+            ASSERT_EQ(Matrix1(i,j), Matrix2(rows-1-i,j));
+}
+
+TEST(DSmatrix, fliplr_dim1_CPU) {
+
+    set_seed();
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    DSmatrix<float, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<float, cpu_impl> Matrix2 = Matrix1;
+    Matrix2.fliplr(1);
+    for (unsigned int i = 0; i < rows; ++i)
+        for (unsigned int j = 0; j < cols; ++j)
+            ASSERT_EQ(Matrix1(i,j), Matrix2(i,cols-1-j));
+}
+
 #ifdef CUDA
-TEST(DSmatrix, constructor_CUDA) {
+TEST(DSmatrix, constructor_default_CUDA) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
     DSmatrix<float, cuda_impl> myMatrix(rows, cols, 1.0);
     float * data = myMatrix.data();
     ASSERT_TRUE(data != nullptr);
+}
+
+TEST(DSmatrix, constructor_from_matrix_CUDA) {
+
+    set_seed();
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+    DSmatrix<float, cpu_impl> myMatrixCPU(rows, cols);
+    generate_random_values(myMatrixCPU.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<float, cuda_impl> myMatrixCUDA(rows, cols);
+    test_copy_h2d(myMatrixCUDA.data(), myMatrixCPU.data(), myMatrixCUDA.size());
+    DSmatrix<float, cuda_impl> copyMatrixCUDA(myMatrixCUDA);
+    DSmatrix<float, cpu_impl>  copyMatrixCPU(rows, cols);
+    test_copy_d2h(copyMatrixCPU.data(), copyMatrixCUDA.data(), copyMatrixCUDA.size());
+    test_equality(myMatrixCPU.data(), copyMatrixCPU.data(), rows*cols);
 }
 
 TEST(DSmatrix, normalize_CUDA) {
