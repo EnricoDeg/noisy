@@ -39,73 +39,73 @@
 #include "tests/utils/test_utils.hpp"
 #endif
 
-TEST(DSmatrix, constructor_default_CPU) {
+template <class T>
+class DSmatrixTemplate : public testing::Test {};
+typedef ::testing::Types<float, double> MyTypesCPU ;
+TYPED_TEST_CASE(DSmatrixTemplate, MyTypesCPU);
+
+TYPED_TEST(DSmatrixTemplate, constructor_default_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
-    float * data = myMatrix.data();
+    DSmatrix<TypeParam, cpu_impl> myMatrix(rows, cols);
+    TypeParam * data = myMatrix.data();
     ASSERT_TRUE(data != nullptr);
 }
 
-TEST(DSmatrix, constructor_from_matrix_CPU) {
+TYPED_TEST(DSmatrixTemplate, constructor_from_matrix_CPU) {
 
     set_seed();
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
-    generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> copyMatrix(myMatrix);
+    DSmatrix<TypeParam, cpu_impl> myMatrix(rows, cols);
+    generate_random_values(myMatrix.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> copyMatrix(myMatrix);
     test_equality(myMatrix.data(), copyMatrix.data(), rows*cols);
 }
 
-TEST(DSmatrix, assign_CPU) {
+TYPED_TEST(DSmatrixTemplate, assign_CPU) {
 
     set_seed();
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
-    generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> copyMatrix = myMatrix;
+    DSmatrix<TypeParam, cpu_impl> myMatrix(rows, cols);
+    generate_random_values(myMatrix.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> copyMatrix = myMatrix;
     test_equality(myMatrix.data(), copyMatrix.data(), rows*cols);
 }
 
-TEST(DSmatrix, plus_equal_CPU) {
+TYPED_TEST(DSmatrixTemplate, plus_equal_CPU) {
 
     set_seed();
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> Matrix1(rows, cols);
-    generate_random_values(Matrix1.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> Matrix2(rows, cols);
-    generate_random_values(Matrix2.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> Matrix3 = Matrix1;
+    DSmatrix<TypeParam, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> Matrix2(rows, cols);
+    generate_random_values(Matrix2.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> Matrix3 = Matrix1;
     Matrix1 += Matrix2;
     for (unsigned int i = 0; i < rows; ++i)
         for (unsigned int j = 0; j < cols; ++j)
             ASSERT_EQ(Matrix1(i,j), Matrix2(i,j)+Matrix3(i,j));
 }
 
-TEST(DSmatrix, prod_equal_CPU) {
+TYPED_TEST(DSmatrixTemplate, prod_equal_CPU) {
 
     set_seed();
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> Matrix1(rows, cols);
-    generate_random_values(Matrix1.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> Matrix2(rows, cols);
-    generate_random_values(Matrix2.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> Matrix3 = Matrix1;
+    DSmatrix<TypeParam, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> Matrix2(rows, cols);
+    generate_random_values(Matrix2.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> Matrix3 = Matrix1;
     Matrix1 *= Matrix2;
     for (unsigned int i = 0; i < rows; ++i)
         for (unsigned int j = 0; j < cols; ++j)
             ASSERT_EQ(Matrix1(i,j), Matrix2(i,j)*Matrix3(i,j));
 }
-
-template <class T>
-class DSmatrixTemplate : public testing::Test {};
-typedef ::testing::Types<float, double> MyTypesCPU ;
-TYPED_TEST_CASE(DSmatrixTemplate, MyTypesCPU);
 
 TYPED_TEST(DSmatrixTemplate, fliplr_dim0_CPU) {
 
@@ -135,63 +135,63 @@ TYPED_TEST(DSmatrixTemplate, fliplr_complex_dim0_CPU) {
             ASSERT_EQ(Matrix1(i,j), Matrix2(rows-1-i,j));
 }
 
-TEST(DSmatrix, fliplr_dim1_CPU) {
+TYPED_TEST(DSmatrixTemplate, fliplr_dim1_CPU) {
 
     set_seed();
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> Matrix1(rows, cols);
-    generate_random_values(Matrix1.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cpu_impl> Matrix2 = Matrix1;
+    DSmatrix<TypeParam, cpu_impl> Matrix1(rows, cols);
+    generate_random_values(Matrix1.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cpu_impl> Matrix2 = Matrix1;
     Matrix2.fliplr(1);
     for (unsigned int i = 0; i < rows; ++i)
         for (unsigned int j = 0; j < cols; ++j)
             ASSERT_EQ(Matrix1(i,j), Matrix2(i,cols-1-j));
 }
 
-TEST(DSmatrix, normalize_CPU) {
+TYPED_TEST(DSmatrixTemplate, normalize_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> Matrix1(rows, cols, 1.0);
+    DSmatrix<TypeParam, cpu_impl> Matrix1(rows, cols, TypeParam(1.0));
     Matrix1.normalize();
     for (unsigned int i = 0; i < rows; ++i)
         for (unsigned int j = 0; j < cols; ++j)
-            ASSERT_EQ(Matrix1(i,j), 1.0f / (rows * cols));
+            ASSERT_EQ(Matrix1(i,j), TypeParam(1.0) / (rows * cols));
 }
 
 #ifdef CUDA
-TEST(DSmatrix, constructor_default_CUDA) {
+TYPED_TEST(DSmatrixTemplate, constructor_default_CUDA) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cuda_impl> myMatrix(rows, cols, 1.0);
-    float * data = myMatrix.data();
+    DSmatrix<TypeParam, cuda_impl> myMatrix(rows, cols, 1.0);
+    TypeParam * data = myMatrix.data();
     ASSERT_TRUE(data != nullptr);
 }
 
-TEST(DSmatrix, constructor_from_matrix_CUDA) {
+TYPED_TEST(DSmatrixTemplate, constructor_from_matrix_CUDA) {
 
     set_seed();
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cpu_impl> myMatrixCPU(rows, cols);
-    generate_random_values(myMatrixCPU.data(), rows*cols, -10.0f, 10.0f);
-    DSmatrix<float, cuda_impl> myMatrixCUDA(rows, cols);
+    DSmatrix<TypeParam, cpu_impl> myMatrixCPU(rows, cols);
+    generate_random_values(myMatrixCPU.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cuda_impl> myMatrixCUDA(rows, cols);
     test_copy_h2d(myMatrixCUDA.data(), myMatrixCPU.data(), myMatrixCUDA.size());
-    DSmatrix<float, cuda_impl> copyMatrixCUDA(myMatrixCUDA);
-    DSmatrix<float, cpu_impl>  copyMatrixCPU(rows, cols);
+    DSmatrix<TypeParam, cuda_impl> copyMatrixCUDA(myMatrixCUDA);
+    DSmatrix<TypeParam, cpu_impl>  copyMatrixCPU(rows, cols);
     test_copy_d2h(copyMatrixCPU.data(), copyMatrixCUDA.data(), copyMatrixCUDA.size());
     test_equality(myMatrixCPU.data(), copyMatrixCPU.data(), rows*cols);
 }
 
-TEST(DSmatrix, normalize_CUDA) {
+TYPED_TEST(DSmatrixTemplate, normalize_CUDA) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    DSmatrix<float, cuda_impl> myMatrix(rows, cols, 1.0);
+    DSmatrix<TypeParam, cuda_impl> myMatrix(rows, cols, 1.0);
     myMatrix.normalize();
     // test results
-    test_check_device_results(myMatrix.data(), rows * cols, 1.0f / (rows * cols), 1e-7f);
+    test_check_device_results(myMatrix.data(), rows * cols, TypeParam(1.0) / (rows * cols), TypeParam(1e-7));
 }
 #endif
