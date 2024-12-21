@@ -48,4 +48,10 @@ template <typename Tdata, template <class> class  backend>
 void pad(const DSmatrix<Tdata, backend>& inMat ,
                DSmatrix<Tdata, backend>& outMat);
 
+template <typename Tdata, template <class> class  backend>
+void dshear(const DSmatrix<Tdata, backend>& inMat ,
+                  DSmatrix<Tdata, backend>& outMat,
+                  long int                  k     ,
+                  unsigned int              dim   );
+
 #endif

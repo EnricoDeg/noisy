@@ -100,6 +100,12 @@ public:
                     unsigned int         nCols,
                     unsigned int         mRows,
                     unsigned int         mCols);
+    static void dshear(Tdata * __restrict__ inData ,
+                       Tdata * __restrict__ outData,
+                       long int             k      ,
+                       unsigned int         dim    ,
+                       unsigned int         mRows  ,
+                       unsigned int         mCols  );
 };
 
 template <typename Tdata>

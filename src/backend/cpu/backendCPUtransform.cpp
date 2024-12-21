@@ -151,3 +151,56 @@ void cpu_impl<Tdata>::transform::pad(Tdata * __restrict__ in   ,
         std::memcpy(outRow + offsetCols, inRow, mCols * sizeof(Tdata));
     }
 }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::transform::dshear(Tdata * __restrict__ inData ,
+                                        Tdata * __restrict__ outData,
+                                        long int             k      ,
+                                        unsigned int         dim    ,
+                                        unsigned int         mRows  ,
+                                        unsigned int         mCols  ) {
+
+    assert(dim == 0 || dim == 1);
+
+    if ( dim == 0 ) {
+
+         for (unsigned int j = 0; j < mCols; ++j) {
+
+            long int shift = -k*(mCols / 2 - j);
+            if (shift < 0) {
+
+                for (unsigned int i = 0; i < mRows+shift; ++i )
+                    outData[i * mCols + j] = * (inData + (i-shift) * mCols + j);
+                for (unsigned int i = mRows+shift; i < mRows; ++i)
+                    outData[i * mCols + j] = * (inData + (i - (mRows+shift)) * mCols + j);
+            } else {
+
+                for (unsigned int i = 0; i < shift; ++i)
+                    outData[i * mCols + j] = * (inData + (mRows-shift+i) * mCols + j);
+                for (unsigned int i = shift; i < mRows; ++i)
+                    outData[i * mCols + j] = * (inData + (i-shift) * mCols + j);
+            }
+
+         }
+
+    } else if ( dim == 1 ) {
+
+        for (unsigned int  i = 0; i < mRows; ++i) {
+
+            long int shift = -k*(mRows / 2 - i);
+            const Tdata * __restrict in  = inData  + i * mCols ;
+            Tdata * __restrict out = outData + i * mCols ;
+            if (shift < 0) {
+                for (unsigned int j = 0; j < mCols+shift; ++j )
+                    out[j] = in[j-shift];
+                for (unsigned int j = mCols+shift; j < mCols; ++j)
+                    out[j] = in[j - (mCols + shift)];
+            } else {
+                for (unsigned int j = 0; j < shift; ++j)
+                    out[j] = in[mCols-shift+j];
+                for (unsigned int j = shift; j < mCols; ++j)
+                    out[j] = in[j-shift];
+            }
+        }
+    }
+}

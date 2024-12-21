@@ -72,3 +72,14 @@ void cuda_impl<Tdata>::transform::pad(Tdata * __restrict__ in   ,
 
     cuAlgo::padarray2dMatrix(in, out, nRows, nCols, mRows, mCols);
 }
+
+template <typename Tdata>
+void cuda_impl<Tdata>::transform::dshear(Tdata * __restrict__ inData ,
+                                         Tdata * __restrict__ outData,
+                                         long int             k      ,
+                                         unsigned int         dim    ,
+                                         unsigned int         mRows  ,
+                                         unsigned int         mCols  ) {
+
+    cuAlgo::dshear1dMatrix(inData, outData, k, dim, mRows, mCols);
+}

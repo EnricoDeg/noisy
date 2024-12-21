@@ -87,3 +87,22 @@ void pad(const DSmatrix<Tdata, backend>& inMat ,
                                    dimsOut.rows, dimsOut.cols,
                                    dims.rows, dims.cols);
 }
+
+template <typename Tdata, template <class> class  backend>
+void dshear(const DSmatrix<Tdata, backend>& inMat ,
+                  DSmatrix<Tdata, backend>& outMat,
+                  long int                  k     ,
+                  unsigned int              dim   ) {
+
+    t_dims dims = inMat.dims();
+    t_dims dimsOut = outMat.dims();
+
+    assert(dims.rows == dimsOut.rows);
+    assert(dims.cols == dimsOut.cols);
+
+    Tdata * __restrict__ inData = inMat.data();
+    Tdata * __restrict__ outData = outMat.data();
+    backend<Tdata>::transform::dshear(inData, outData,
+                                      k, dim,
+                                      dims.rows, dims.cols);
+}
