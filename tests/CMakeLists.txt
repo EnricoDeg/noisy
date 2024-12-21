@@ -79,8 +79,25 @@ if (ENABLE_CUDA)
 endif()
 target_link_libraries(test_FourierTransform GTest::gtest_main)
 
+# Transform
+if(ENABLE_CUDA)
+    set_source_files_properties(transform/test_transformMatrix.cpp PROPERTIES LANGUAGE CUDA)
+endif()
+add_executable( test_transformMatrix
+                transform/test_transformMatrix.cpp
+              )
+target_link_libraries(test_transformMatrix noisy)
+target_link_libraries(test_transformMatrix ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES})
+if (ENABLE_CUDA)
+    target_link_libraries(test_transformMatrix ${CUDA_LIBRARIES})
+    set_property(TARGET test_transformMatrix PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    target_link_libraries (test_transformMatrix ${CUFFT_LIBRARIES} ${CUALGO_LIBRARIES})
+endif()
+target_link_libraries(test_transformMatrix GTest::gtest_main)
+
 # Add all tests to GoogleTest
 include(GoogleTest)
 gtest_discover_tests(test_DSmatrix)
 gtest_discover_tests(test_BackendFourier)
 gtest_discover_tests(test_FourierTransform)
+gtest_discover_tests(test_transformMatrix)
