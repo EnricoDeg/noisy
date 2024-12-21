@@ -204,3 +204,25 @@ void cpu_impl<Tdata>::transform::dshear(Tdata * __restrict__ inData ,
         }
     }
 }
+
+// TODO: use template argument for stride
+template <typename Tdata>
+void cpu_impl<Tdata>::transform::transpose(Tdata * __restrict__ inData ,
+                                           Tdata * __restrict__ outData,
+                                           unsigned int         mRows  ,
+                                           unsigned int         mCols  ) {
+
+    unsigned int stride = std::min(mRows, mCols);
+    stride = std::min(stride, 32U);
+    for (unsigned int i = 0; i < mCols; i+=stride) {
+        for (unsigned int j = 0; j < mRows; j+=stride ) {
+            for (unsigned int ii = i; ii < std::min(mCols, i+stride) ; ++ii ) {
+                const Tdata * __restrict in  = inData  + ii ;
+                Tdata * __restrict out = outData + ii * mRows ;
+                for (unsigned int jj = j; jj < std::min(mRows, j+stride); ++jj) {
+                    out[jj] = in[jj*mCols];
+                }
+            }
+        }
+    }
+}

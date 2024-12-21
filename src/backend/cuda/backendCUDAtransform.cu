@@ -83,3 +83,13 @@ void cuda_impl<Tdata>::transform::dshear(Tdata * __restrict__ inData ,
 
     cuAlgo::dshear1dMatrix(inData, outData, k, dim, mRows, mCols);
 }
+
+// TODO: use template argument for stride
+template <typename Tdata>
+void cuda_impl<Tdata>::transform::transpose(Tdata * __restrict__ inData ,
+                                            Tdata * __restrict__ outData,
+                                            unsigned int         mRows  ,
+                                            unsigned int         mCols  ) {
+
+    cuAlgo::transposeMatrix(inData, outData, mCols, mRows);
+}

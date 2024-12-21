@@ -106,6 +106,10 @@ public:
                        unsigned int         dim    ,
                        unsigned int         mRows  ,
                        unsigned int         mCols  );
+    static void transpose(Tdata * __restrict__ inData ,
+                          Tdata * __restrict__ outData,
+                          unsigned int         mRows  ,
+                          unsigned int         mCols  );
 };
 
 template <typename Tdata>

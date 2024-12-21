@@ -54,4 +54,8 @@ void dshear(const DSmatrix<Tdata, backend>& inMat ,
                   long int                  k     ,
                   unsigned int              dim   );
 
+template <typename Tdata, template <class> class  backend>
+void transpose(const DSmatrix<Tdata, backend>& inMat ,
+                     DSmatrix<Tdata, backend>& outMat);
+
 #endif
