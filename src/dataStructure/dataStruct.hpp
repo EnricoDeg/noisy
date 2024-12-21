@@ -55,7 +55,7 @@ public:
     Tdata * data() const;
     Tdata * begin();
     Tdata * end();
-    t_dims dims();
+    t_dims dims() const;
     unsigned int size();
     // in place operations
     void normalize();

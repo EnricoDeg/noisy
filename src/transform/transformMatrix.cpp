@@ -28,6 +28,10 @@
  */
 
 #include "src/transform/transformMatrix.hpp"
+#include "src/backend/cpu/backendCPU.hpp"
+#ifdef CUDA
+#include "src/backend/cuda/backendCUDA.hpp"
+#endif
 
 #include <cassert>
 
@@ -108,8 +112,8 @@ void dshear(const DSmatrix<Tdata, backend>& inMat ,
 }
 
 template <typename Tdata, template <class> class  backend>
-void dshear(const DSmatrix<Tdata, backend>& inMat ,
-                  DSmatrix<Tdata, backend>& outMat) {
+void transpose(const DSmatrix<Tdata, backend>& inMat ,
+                     DSmatrix<Tdata, backend>& outMat) {
 
     t_dims dims = inMat.dims();
     t_dims dimsOut = outMat.dims();
@@ -122,8 +126,11 @@ void dshear(const DSmatrix<Tdata, backend>& inMat ,
 }
 
 template <typename Tdata, template <class> class  backend>
-void transpose(const DSmatrix<Tdata, backend>&  inMat,
-                     Tdata                     *out  ) {
+void normL2(const DSmatrix<Tdata, backend>&  inMat,
+                  Tdata                     *out  ) {
 
     backend<Tdata>::transform::normL2(inMat.data(), out, inMat.size());
 }
+
+template void transpose(const DSmatrix<float, cpu_impl>& inMat ,
+                              DSmatrix<float, cpu_impl>& outMat);

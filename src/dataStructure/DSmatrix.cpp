@@ -126,7 +126,7 @@ Tdata* DSmatrix<Tdata, backend>::end()
 }
 
 template <typename Tdata, template <class> class backend>
-t_dims DSmatrix<Tdata, backend>::dims()
+t_dims DSmatrix<Tdata, backend>::dims() const
 {
     return (t_dims){mRows, mCols};
 }
