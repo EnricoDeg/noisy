@@ -40,6 +40,8 @@
 
 #include "src/fourier/FourierTransform.hpp"
 
+# define M_PI 3.14159265358979323846
+
 template<typename T>
 void fftshiftMatrixCPU(T * idata, T * odata,
                        unsigned int mRows, unsigned int mCols) {
@@ -223,6 +225,35 @@ TEST(fourier, ifftshift_CPU) {
     ifftshiftMatrixCPU(cMatrix.data(), rMatrix.data(), rows, cols);
     fftOp.ifftshift(cMatrix);
     test_equality(cMatrix.data(), rMatrix.data(), rows*cols);
+}
+
+TEST(fourier, fft_CPU) {
+
+    unsigned int rows = 1;
+    unsigned int cols = 256;
+    unsigned int period = 128;
+    FourierTransform<float, cpu_impl<float>> fftOp(rows, cols);
+    DSmatrix<std::complex<float>, cpu_impl> myMatrix(rows, cols);
+    for (unsigned int i = 0; i < rows; ++i)
+        for (unsigned int j = 0; j < cols; ++j) {
+            myMatrix(i,j) = std::complex<float>( std::sin(j * M_PI / period), 0.0 );
+        }
+    fftOp.fft(myMatrix);
+
+    // check impulses
+    ASSERT_EQ(myMatrix(0, 1).imag(), -float(period));
+    ASSERT_EQ(myMatrix(0, cols-1).imag(), float(period));
+
+    // check zeros
+    for (unsigned int i = 0; i < rows; ++i) {
+        for (unsigned int j = 0; j < cols; ++j) {
+            ASSERT_NEAR(std::abs(myMatrix(i,j).real()), 0.0, 1e-5);
+        }
+        ASSERT_NEAR(std::abs(myMatrix(i,0).imag()), 0.0, 1e-5);
+        for (unsigned int j = 1; j < cols-1; ++j) {
+            ASSERT_NEAR(std::abs(myMatrix(i,0).imag()), 0.0, 1e-5);
+        }
+    }
 }
 
 #ifdef CUDA
