@@ -42,6 +42,7 @@
 
 # define M_PI 3.14159265358979323846
 
+
 template<typename T>
 void fftshiftMatrixCPU(T * idata, T * odata,
                        unsigned int mRows, unsigned int mCols) {
@@ -205,7 +206,7 @@ TEST(fourier, fftshift_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    FourierTransform<float, cpu_impl<float>> fftOp(rows, cols);
+    FourierTransform<float, cpu_impl> fftOp(rows, cols);
     DSmatrix<std::complex<float>, cpu_impl> cMatrix(rows, cols);
     generate_random_values(cMatrix.data(), rows*cols, -10.0f, 10.0f);
     DSmatrix<std::complex<float>, cpu_impl> rMatrix(rows, cols);
@@ -218,7 +219,7 @@ TEST(fourier, ifftshift_CPU) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    FourierTransform<float, cpu_impl<float>> fftOp(rows, cols);
+    FourierTransform<float, cpu_impl> fftOp(rows, cols);
     DSmatrix<std::complex<float>, cpu_impl> cMatrix(rows, cols);
     generate_random_values(cMatrix.data(), rows*cols, -10.0f, 10.0f);
     DSmatrix<std::complex<float>, cpu_impl> rMatrix(rows, cols);
@@ -232,7 +233,7 @@ TEST(fourier, fft_CPU) {
     unsigned int rows = 1;
     unsigned int cols = 256;
     unsigned int period = 128;
-    FourierTransform<float, cpu_impl<float>> fftOp(rows, cols);
+    FourierTransform<float, cpu_impl> fftOp(rows, cols);
     DSmatrix<std::complex<float>, cpu_impl> myMatrix(rows, cols);
     for (unsigned int i = 0; i < rows; ++i)
         for (unsigned int j = 0; j < cols; ++j) {
@@ -261,7 +262,7 @@ TEST(fourier, constructor_destructor_CUDA) {
 
     unsigned int rows = 1024;
     unsigned int cols =  512;
-    FourierTransform<float, cuda_impl<float>> fftOp(rows, cols);
+    FourierTransform<float, cuda_impl> fftOp(rows, cols);
     DSmatrix<thrust::complex<float>, cuda_impl> myMatrix(rows, cols);
     fftOp.fft(myMatrix);
 }
