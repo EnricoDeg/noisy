@@ -81,6 +81,40 @@ TEST(transform, upsample_dim0_CPU) {
         }
 }
 
+TEST(transform, pad_CPU) {
+
+    unsigned int rows = 32;
+    unsigned int cols = 64;
+    unsigned int rowsP = 64;
+    unsigned int colsP = 96;
+    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
+    generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<float, cpu_impl> myMatrixPad(rowsP, colsP);
+    pad<float, cpu_impl>(myMatrix, myMatrixPad);
+
+    unsigned int offsetRows = ( rowsP - rows ) / 2 + ( rowsP - rows ) % 2;
+    unsigned int offsetCols = ( colsP - cols ) / 2 + ( colsP - cols ) % 2;
+
+    for (unsigned int i = 0; i < offsetRows; ++i)
+        for (unsigned int j = 0; j < colsP; ++j)
+            ASSERT_EQ(myMatrixPad(i,j), 0);
+
+    for (unsigned int i = offsetRows; i < offsetRows + rows; ++i) {
+        for (unsigned int j = 0; j < offsetCols; ++j)
+            ASSERT_EQ(myMatrixPad(i,j), 0);
+
+        for (unsigned int j = offsetCols; j < offsetCols + cols; ++j)
+            ASSERT_EQ(myMatrixPad(i,j), myMatrix(i-offsetRows,j-offsetCols));
+
+        for (unsigned int j = offsetCols + cols; j < colsP; ++j)
+            ASSERT_EQ(myMatrixPad(i,j), 0);
+    }
+
+    for (unsigned int i = offsetRows + rows; i < rowsP; ++i)
+        for (unsigned int j = 0; j < colsP; ++j)
+            ASSERT_EQ(myMatrixPad(i,j), 0);
+}
+
 TEST(transform, transpose_CPU) {
 
     unsigned int rows = 32;
