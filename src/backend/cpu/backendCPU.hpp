@@ -141,6 +141,19 @@ public:
                             std::complex<Tdata> * __restrict__ dataIn2,
                             std::complex<Tdata> * __restrict__ dataOut,
                             unsigned int size);
+    static void padMatrix(Tdata * __restrict__ dataIn ,
+                          Tdata * __restrict__ dataOut,
+                          unsigned int         inRows ,
+                          unsigned int         inCols ,
+                          unsigned int         outRows,
+                          unsigned int         outCols);
+    static void convData(Tdata * __restrict__ dataIn ,
+                         Tdata * __restrict__ filter ,
+                         Tdata * __restrict__ dataOut,
+                         unsigned int         mRows  ,
+                         unsigned int         mCols  ,
+                         unsigned int         fRows  ,
+                         unsigned int         fCols  );
 };
 
 template class cpu_impl<float>;

@@ -62,4 +62,10 @@ template <typename Tdata, template <class> class  backend>
 void normL2(const DSmatrix<Tdata, backend>&  inMat,
                   Tdata                     *out  );
 
+template <typename Tdata, template <class> class  backend,
+                          template <class> class  backendC>
+void convolve(const DSmatrix<Tdata, backend>&  inMat ,
+              const DSmatrix<Tdata, backend>&  filter,
+                    DSmatrix<Tdata, backend>&  outMat);
+
 #endif

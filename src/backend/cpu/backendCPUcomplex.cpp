@@ -32,6 +32,7 @@
 
 #include <cmath>
 #include <cassert>
+#include <cstring>
 
 template <typename Tdata>
 void cpu_complex_impl<Tdata>::op::corrComplex(std::complex<Tdata> * __restrict__ dataIn1,
@@ -51,4 +52,62 @@ void cpu_complex_impl<Tdata>::op::convComplex(std::complex<Tdata> * __restrict__
 
     for (unsigned int i = 0; i < size; ++i)
         dataOut[i] = dataIn1[i] * dataIn2[i];
+}
+
+template <typename Tdata>
+void cpu_complex_impl<Tdata>::op::padMatrix(Tdata * __restrict__ dataIn ,
+                                            Tdata * __restrict__ dataOut,
+                                            unsigned int         inRows ,
+                                            unsigned int         inCols ,
+                                            unsigned int         outRows,
+                                            unsigned int         outCols) {
+
+    for (unsigned int i = 0; i < outRows; ++i) {
+        Tdata * __restrict__ out = dataOut + i*outCols;
+        for (unsigned int j = 0; j < outCols; ++j) {
+            out[j] = 0;
+        }
+    }
+
+    for (size_t i = 0; i < inRows; ++i) {
+
+        const Tdata * __restrict__ in  = dataIn  + i * inCols ;
+        Tdata * __restrict__ out = dataOut + i*outCols;
+        std::memcpy(out, in, inCols * sizeof(Tdata));
+    }
+}
+
+// dataIn and filter are assumed to be padded
+template <typename Tdata>
+void cpu_complex_impl<Tdata>::op::convData(Tdata * __restrict__ dataIn ,
+                                           Tdata * __restrict__ filter ,
+                                           Tdata * __restrict__ dataOut,
+                                           unsigned int         mRows  ,
+                                           unsigned int         mCols  ,
+                                           unsigned int         fRows  ,
+                                           unsigned int         fCols  ) {
+
+    unsigned int rows = mRows + fRows - 1;
+    unsigned int cols = mCols + fCols - 1;
+
+    for (unsigned int i = 0; i < rows; ++i) {
+        Tdata * __restrict__ out = dataOut + i*cols;
+        for (unsigned int j = 0; j < cols; ++j) {
+            out[j] = 0;
+        }
+    }
+
+    for (unsigned int nr = 0; nr < rows; ++nr) {
+        unsigned int low_mr = std::max((int)0, (int)nr - (int)fRows + 1);
+        unsigned int high_mr = std::min((int)mRows - 1, (int)nr);
+        for (unsigned int nc = 0; nc < cols; ++nc) {
+            unsigned int low_mc = std::max((int)0, (int)nc - (int)fCols + 1);
+            unsigned int high_mc = std::min((int)mCols - 1 , (int)nc);
+            Tdata tmp = 0;
+            for (unsigned int mr = low_mr; mr <= high_mr; ++mr)
+                for (unsigned int mc = low_mc; mc <= high_mc; ++mc)
+                    tmp += dataIn[mr * cols + mc] * filter[(nr-mr) * cols + (nc-mc)];
+            dataOut[nr * cols + nc] = tmp;
+        }
+    }
 }

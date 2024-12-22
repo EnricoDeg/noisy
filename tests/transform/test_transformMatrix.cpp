@@ -152,6 +152,35 @@ TEST(transform, normL2_complex_CPU) {
     ASSERT_EQ(result.imag(), 0);
 }
 
+TEST(transform, convolve_CPU) {
+
+    unsigned int rows  = 5;
+    unsigned int cols  = 5;
+    unsigned int fRows = 2;
+    unsigned int fCols = 2;
+    DSmatrix<float, cpu_impl> myMatrix(rows, cols, 2.0);
+    DSmatrix<float, cpu_impl> filter(fRows, fCols, 0.25);
+    DSmatrix<float, cpu_impl> result(rows + fRows - 1, cols + fCols - 1);
+    convolve<float, cpu_impl, cpu_complex_impl>(myMatrix, filter, result);
+
+    // check results
+    ASSERT_EQ(result(0                ,0               ), 0.5);
+    ASSERT_EQ(result(rows + fRows - 2, 0               ), 0.5);
+    ASSERT_EQ(result(0               , cols + fCols - 2), 0.5);
+    ASSERT_EQ(result(rows + fRows - 2, cols + fCols - 2), 0.5);
+    for (unsigned int i = 1; i < rows + fRows - 2; ++i) {
+        ASSERT_EQ(result(i,0), 1);
+        ASSERT_EQ(result(i,cols + fCols - 2), 1);
+    }
+    for (unsigned int j = 1; j < cols + fCols - 2; ++j) {
+        ASSERT_EQ(result(0,j), 1);
+        ASSERT_EQ(result(rows + fRows - 2,j), 1);
+    }
+    for (unsigned int i = 1; i < rows + fRows - 2; ++i)
+        for (unsigned int j = 1; j < cols + fCols - 2; ++j)
+            ASSERT_EQ(result(i,j), 2);
+}
+
 #ifdef CUDA
 TEST(transform, normL2_complex_CUDA) {
 

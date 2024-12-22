@@ -33,6 +33,7 @@
 #include "src/backend/cuda/backendCUDA.hpp"
 #endif
 
+#include <iostream>
 #include <cassert>
 
 template <typename Tdata, template <class> class  backend>
@@ -132,7 +133,49 @@ void normL2(const DSmatrix<Tdata, backend>&  inMat,
     backend<Tdata>::transform::normL2(inMat.data(), out, inMat.size());
 }
 
+template <typename Tdata, template <class> class  backend,
+                          template <class> class  backendC>
+void convolve(const DSmatrix<Tdata, backend>&  inMat ,
+              const DSmatrix<Tdata, backend>&  filter,
+                    DSmatrix<Tdata, backend>&  outMat) {
+
+    t_dims inDims  = inMat.dims();
+    t_dims fDims   = filter.dims();
+    t_dims outDims = outMat.dims();
+    assert(outDims.rows == inDims.rows + fDims.rows - 1);
+    assert(outDims.cols == inDims.cols + fDims.cols - 1);
+
+    DSmatrix<Tdata, backend> inMatPadded(outDims.rows, outDims.cols);
+    backendC<Tdata>::op::padMatrix(inMat.data(),
+                                   inMatPadded.data(),
+                                   inDims.rows,
+                                   inDims.cols,
+                                   outDims.rows,
+                                   outDims.cols);
+
+    DSmatrix<Tdata, backend> filterPadded(outDims.rows, outDims.cols);
+    backendC<Tdata>::op::padMatrix(filter.data(),
+                                   filterPadded.data(),
+                                   fDims.rows,
+                                   fDims.cols,
+                                   outDims.rows,
+                                   outDims.cols);
+
+    backendC<Tdata>::op::convData(inMatPadded.data(),
+                                  filterPadded.data(),
+                                  outMat.data(),
+                                  inDims.rows,
+                                  inDims.cols,
+                                  fDims.rows,
+                                  fDims.cols);
+}
+
 // INSTANTIATE
+
+template void convolve<float, cpu_impl, cpu_complex_impl>
+                     (const DSmatrix<float, cpu_impl>&  inMat ,
+                      const DSmatrix<float, cpu_impl>&  filter,
+                            DSmatrix<float, cpu_impl>&  outMat);
 
 // CPU
 template void downsample(const DSmatrix<float, cpu_impl>& inMat  ,

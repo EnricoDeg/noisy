@@ -97,7 +97,7 @@ public:
         m_impl->fftshift(inMat.data());
     }
 
-    void ifftWithShiftsPadded(const DSmatriDSmatrix<complex_type, backendM>& inMatx<complex_type, backendM>& inMat ,
+    void ifftWithShiftsPadded(const DSmatrix<complex_type, backendM>& inMat ,
                                     DSmatrix<complex_type, backendM>& outMat) {
 
         pad(inMat, outMat);
