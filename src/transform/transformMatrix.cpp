@@ -132,5 +132,166 @@ void normL2(const DSmatrix<Tdata, backend>&  inMat,
     backend<Tdata>::transform::normL2(inMat.data(), out, inMat.size());
 }
 
+// INSTANTIATE
+
+// CPU
+template void downsample(const DSmatrix<float, cpu_impl>& inMat  ,
+                               unsigned int               dim    ,
+                               unsigned int               stride ,
+                               DSmatrix<float, cpu_impl>& outMat );
+template void downsample(const DSmatrix<std::complex<float>, cpu_impl>& inMat  ,
+                               unsigned int                             dim    ,
+                               unsigned int                             stride ,
+                               DSmatrix<std::complex<float>, cpu_impl>& outMat );
+template void downsample(const DSmatrix<double, cpu_impl>& inMat  ,
+                               unsigned int                dim    ,
+                               unsigned int                stride ,
+                               DSmatrix<double, cpu_impl>& outMat );
+template void downsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
+                               unsigned int                              dim    ,
+                               unsigned int                              stride ,
+                               DSmatrix<std::complex<double>, cpu_impl>& outMat );
+// CUDA
+template void downsample(const DSmatrix<float, cuda_impl>& inMat  ,
+                               unsigned int                dim    ,
+                               unsigned int                stride ,
+                               DSmatrix<float, cuda_impl>& outMat );
+template void downsample(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat  ,
+                               unsigned int                                 dim    ,
+                               unsigned int                                 stride ,
+                               DSmatrix<thrust::complex<float>, cuda_impl>& outMat );
+template void downsample(const DSmatrix<double, cuda_impl>& inMat  ,
+                               unsigned int                 dim    ,
+                               unsigned int                 stride ,
+                               DSmatrix<double, cuda_impl>& outMat );
+template void downsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat  ,
+                               unsigned int                                  dim    ,
+                               unsigned int                                  stride ,
+                               DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
+
+// CPU
+template void upsample(const DSmatrix<float, cpu_impl>& inMat  ,
+                             unsigned int               dim    ,
+                             unsigned int               nzeros ,
+                             DSmatrix<float, cpu_impl>& outMat );
+template void upsample(const DSmatrix<std::complex<float>, cpu_impl>& inMat  ,
+                             unsigned int                             dim    ,
+                             unsigned int                             nzeros ,
+                             DSmatrix<std::complex<float>, cpu_impl>& outMat );
+template void upsample(const DSmatrix<double, cpu_impl>& inMat  ,
+                             unsigned int                dim    ,
+                             unsigned int                nzeros ,
+                             DSmatrix<double, cpu_impl>& outMat );
+template void upsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
+                             unsigned int                              dim    ,
+                             unsigned int                              nzeros ,
+                             DSmatrix<std::complex<double>, cpu_impl>& outMat );
+// CUDA
+template void upsample(const DSmatrix<float, cuda_impl>& inMat  ,
+                             unsigned int                dim    ,
+                             unsigned int                nzeros ,
+                             DSmatrix<float, cuda_impl>& outMat );
+template void upsample(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat  ,
+                             unsigned int                                 dim    ,
+                             unsigned int                                 nzeros ,
+                             DSmatrix<thrust::complex<float>, cuda_impl>& outMat );
+template void upsample(const DSmatrix<double, cuda_impl>& inMat  ,
+                             unsigned int                 dim    ,
+                             unsigned int                 nzeros ,
+                             DSmatrix<double, cuda_impl>& outMat );
+template void upsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat  ,
+                             unsigned int                                  dim    ,
+                             unsigned int                                  nzeros ,
+                             DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
+
+// CPU
+template void pad(const DSmatrix<float, cpu_impl>& inMat ,
+                        DSmatrix<float, cpu_impl>& outMat);
+template void pad(const DSmatrix<std::complex<float>, cpu_impl>& inMat ,
+                        DSmatrix<std::complex<float>, cpu_impl>& outMat);
+template void pad(const DSmatrix<double, cpu_impl>& inMat ,
+                        DSmatrix<double, cpu_impl>& outMat);
+template void pad(const DSmatrix<std::complex<double>, cpu_impl>& inMat ,
+                        DSmatrix<std::complex<double>, cpu_impl>& outMat);
+// CUDA
+template void pad(const DSmatrix<float, cuda_impl>& inMat ,
+                        DSmatrix<float, cuda_impl>& outMat);
+template void pad(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat ,
+                        DSmatrix<thrust::complex<float>, cuda_impl>& outMat);
+template void pad(const DSmatrix<double, cuda_impl>& inMat ,
+                        DSmatrix<double, cuda_impl>& outMat);
+template void pad(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat ,
+                        DSmatrix<thrust::complex<double>, cuda_impl>& outMat);
+
+// CPU
+template void dshear(const DSmatrix<float, cpu_impl>& inMat ,
+                           DSmatrix<float, cpu_impl>& outMat,
+                           long int                   k     ,
+                           unsigned int               dim   );
+template void dshear(const DSmatrix<std::complex<float>, cpu_impl>& inMat ,
+                           DSmatrix<std::complex<float>, cpu_impl>& outMat,
+                           long int                                 k     ,
+                           unsigned int                             dim   );
+template void dshear(const DSmatrix<double, cpu_impl>& inMat ,
+                           DSmatrix<double, cpu_impl>& outMat,
+                           long int                    k     ,
+                           unsigned int                dim   );
+template void dshear(const DSmatrix<std::complex<double>, cpu_impl>& inMat ,
+                           DSmatrix<std::complex<double>, cpu_impl>& outMat,
+                           long int                                  k     ,
+                           unsigned int                              dim   );
+// CUDA
+template void dshear(const DSmatrix<float, cuda_impl>& inMat ,
+                           DSmatrix<float, cuda_impl>& outMat,
+                           long int                    k     ,
+                           unsigned int                dim   );
+template void dshear(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat ,
+                           DSmatrix<thrust::complex<float>, cuda_impl>& outMat,
+                           long int                                     k     ,
+                           unsigned int                                 dim   );
+template void dshear(const DSmatrix<double, cuda_impl>& inMat ,
+                           DSmatrix<double, cuda_impl>& outMat,
+                           long int                     k     ,
+                           unsigned int                 dim   );
+template void dshear(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat ,
+                           DSmatrix<thrust::complex<double>, cuda_impl>& outMat,
+                           long int                                      k     ,
+                           unsigned int                                  dim   );
+
+// CPU
 template void transpose(const DSmatrix<float, cpu_impl>& inMat ,
                               DSmatrix<float, cpu_impl>& outMat);
+template void transpose(const DSmatrix<std::complex<float>, cpu_impl>& inMat ,
+                              DSmatrix<std::complex<float>, cpu_impl>& outMat);
+template void transpose(const DSmatrix<double, cpu_impl>& inMat ,
+                              DSmatrix<double, cpu_impl>& outMat);
+template void transpose(const DSmatrix<std::complex<double>, cpu_impl>& inMat ,
+                              DSmatrix<std::complex<double>, cpu_impl>& outMat);
+// CUDA
+template void transpose(const DSmatrix<float, cuda_impl>& inMat ,
+                              DSmatrix<float, cuda_impl>& outMat);
+template void transpose(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat ,
+                              DSmatrix<thrust::complex<float>, cuda_impl>& outMat);
+template void transpose(const DSmatrix<double, cuda_impl>& inMat ,
+                              DSmatrix<double, cuda_impl>& outMat);
+template void transpose(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat ,
+                              DSmatrix<thrust::complex<double>, cuda_impl>& outMat);
+
+// CPU
+template void normL2(const DSmatrix<float, cpu_impl>&  inMat,
+                           float                      *out  );
+template void normL2(const DSmatrix<std::complex<float>, cpu_impl>&  inMat,
+                           std::complex<float>                      *out  );
+template void normL2(const DSmatrix<double, cpu_impl>&  inMat,
+                           double                      *out  );
+template void normL2(const DSmatrix<std::complex<double>, cpu_impl>&  inMat,
+                           std::complex<double>                      *out  );
+// CUDA
+template void normL2(const DSmatrix<float, cuda_impl>&  inMat,
+                           float                       *out  );
+template void normL2(const DSmatrix<thrust::complex<float>, cuda_impl>&  inMat,
+                           thrust::complex<float>                       *out  );
+template void normL2(const DSmatrix<double, cuda_impl>&  inMat,
+                           double                       *out  );
+template void normL2(const DSmatrix<thrust::complex<double>, cuda_impl>&  inMat,
+                           thrust::complex<double>                       *out  );

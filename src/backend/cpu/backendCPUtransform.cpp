@@ -96,10 +96,22 @@ void cpu_impl<Tdata>::transform::upsample(Tdata * __restrict__ inMat,
             return;
         }
 
-        for (unsigned int i = 0; i < mRows; ++i) {
+        {
+            const Tdata * __restrict in = inMat;
+            Tdata * __restrict out = outMat;
+            for (unsigned int j = 0; j < mCols; ++j)
+                out[j] = in[j];
+        }
+
+        for (unsigned int i = 1; i < mRows; ++i) {
+            for (unsigned int m = 1; m < nzeros+1; ++m) {
+                Tdata * __restrict outZ = outMat + (i*(nzeros+1)-m)*mCols;
+                for (unsigned int j = 0; j < mCols; ++j)
+                    outZ[j] =0;
+            }
             const Tdata * __restrict in = inMat + i*mCols;
             Tdata * __restrict out = outMat + i*(nzeros+1)*mCols;
-            for (size_t j = 0; j < mCols; ++j)
+            for (unsigned int j = 0; j < mCols; ++j)
                 out[j] = in[j];
         }
         return;
@@ -115,8 +127,12 @@ void cpu_impl<Tdata>::transform::upsample(Tdata * __restrict__ inMat,
         for (unsigned int i = 0; i < mRows; ++i) {
             const Tdata * __restrict in = inMat + i*mCols;
             Tdata * __restrict out = outMat + i*uCols;
-            for (size_t j = 0, k=0; j < mCols; ++j, k+=(nzeros+1))
+            out[0] = in[0];
+            for (unsigned int j = 1, k=nzeros+1; j < mCols; ++j, k+=(nzeros+1)) {
+                for (unsigned int m = 1; m < nzeros+1; ++m)
+                    out[k-m] = 0;
                 out[k] = in[j];
+            }
         }
         return;
     }

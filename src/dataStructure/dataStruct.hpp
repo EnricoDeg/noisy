@@ -54,10 +54,10 @@ public:
     Tdata operator()(unsigned int i, unsigned int j) const;
     // inline info
     Tdata * data() const;
-    Tdata * begin();
-    Tdata * end();
+    Tdata * begin() const;
+    Tdata * end() const;
     t_dims dims() const;
-    unsigned int size();
+    unsigned int size() const;
     // in place operations
     void normalize();
     void normSize();

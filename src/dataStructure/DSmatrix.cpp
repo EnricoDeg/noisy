@@ -121,14 +121,14 @@ Tdata* DSmatrix<Tdata, backend>::data() const
 
 template <typename Tdata, template <class> class backend>
 inline
-Tdata* DSmatrix<Tdata, backend>::begin()
+Tdata* DSmatrix<Tdata, backend>::begin() const
 {
     return mData;
 }
 
 template <typename Tdata, template <class> class backend>
 inline
-Tdata* DSmatrix<Tdata, backend>::end()
+Tdata* DSmatrix<Tdata, backend>::end() const
 {
     return mData + mRows * mCols - 1;
 }
@@ -141,7 +141,7 @@ t_dims DSmatrix<Tdata, backend>::dims() const
 
 template <typename Tdata, template <class> class backend>
 inline
-unsigned int DSmatrix<Tdata, backend>::size()
+unsigned int DSmatrix<Tdata, backend>::size() const
 {
     return mRows * mCols;
 }
