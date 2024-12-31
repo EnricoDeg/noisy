@@ -62,6 +62,16 @@ void cuda_impl<Tdata>::memory::copy(Tdata *dst, Tdata *src, unsigned int size) {
 }
 
 template <typename Tdata>
+void cuda_impl<Tdata>::memory::copy_d2h(Tdata *dst, Tdata *src, unsigned int size) {
+    check_cuda( cudaMemcpy(dst, src, size*sizeof(Tdata), cudaMemcpyDeviceToHost) );
+}
+
+template <typename Tdata>
+void cuda_impl<Tdata>::memory::copy_h2d(Tdata *dst, Tdata *src, unsigned int size) {
+    check_cuda( cudaMemcpy(dst, src, size*sizeof(Tdata), cudaMemcpyHostToDevice) );
+}
+
+template <typename Tdata>
 void cuda_impl<Tdata>::memory::fill(Tdata * __restrict__ data, unsigned int size, Tdata value) {
     dim3 threadsPerBlock(THREADS_PER_BLOCK);
     dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));

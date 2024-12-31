@@ -48,8 +48,21 @@ void cpu_impl<Tdata>::memory::free(Tdata *data) {
 template <typename Tdata>
 void cpu_impl<Tdata>::memory::copy(Tdata* dst, Tdata *src, unsigned int size) {
 
-        std::memcpy(dst, src, size * sizeof(Tdata));
-    }
+    std::memcpy(dst, src, size * sizeof(Tdata));
+}
+
+template <typename Tdata>
+void cpu_impl<Tdata>::memory::copy_d2h(Tdata* dst, Tdata *src, unsigned int size) {
+
+    std::memcpy(dst, src, size * sizeof(Tdata));
+}
+
+template <typename Tdata>
+void cpu_impl<Tdata>::memory::copy_h2d(Tdata* dst, Tdata *src, unsigned int size) {
+
+    std::memcpy(dst, src, size * sizeof(Tdata));
+}
+
 
 template <typename Tdata>
 void cpu_impl<Tdata>::memory::fill(Tdata * __restrict__ data, unsigned int size, Tdata value) {
