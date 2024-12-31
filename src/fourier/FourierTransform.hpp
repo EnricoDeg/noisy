@@ -30,6 +30,8 @@
 #ifndef FOURIERTRANSFORM_HPP_
 #define FOURIERTRANSFORM_HPP_
 
+#include <memory>
+
 #include "src/backend/cpu/backendCPUfourier.hpp"
 #include "src/backend/cuda/backendCUDAfourier.hpp"
 #include "src/dataStructure/dataStruct.hpp"
