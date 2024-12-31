@@ -32,7 +32,7 @@
 #include <vector>
 #include <cmath>
 #include <memory>
-#include "SLfilter.hpp"
+#include "src/shearlet/SLfilter.hpp"
 
 template <typename Tdata, template <class> class  backend>
 DSmatrix<Tdata, backend> SLfilterMirror(DSmatrix<Tdata, backend>& vecIn)
