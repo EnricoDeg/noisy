@@ -30,6 +30,7 @@
 #include "src/backend/cuda/backendCUDA.hpp"
 
 #include <cassert>
+#include <cmath>
 
 #include "cuAlgo.hpp"
 
@@ -38,12 +39,12 @@ __global__ void sumInPlaceKernel(T            * __restrict__ data1,
                                  const T      * __restrict__ data2,
                                  unsigned int                size ) {
 
-	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-	while (i < size) {
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    while (i < size) {
 
-		data1[i] += data2[i];
-		i += gridDim.x * blockDim.x;
-	}
+        data1[i] += data2[i];
+        i += gridDim.x * blockDim.x;
+    }
 }
 
 template<typename T>
@@ -51,12 +52,12 @@ __global__ void prodInPlaceKernel(T            * __restrict__ data1,
                                   const T      * __restrict__ data2,
                                   unsigned int                size ) {
 
-	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-	while (i < size) {
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    while (i < size) {
 
-		data1[i] *= data2[i];
-		i += gridDim.x * blockDim.x;
-	}
+        data1[i] *= data2[i];
+        i += gridDim.x * blockDim.x;
+    }
 }
 
 template<typename T>
@@ -64,12 +65,25 @@ __global__ void divScalarInPlaceKernel(T            * __restrict__ data  ,
                                        unsigned int                size  ,
                                        T                           scalar) {
 
-	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-	while (i < size) {
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    while (i < size) {
 
-		data[i] /= scalar;
-		i += gridDim.x * blockDim.x;
-	}
+        data[i] /= scalar;
+        i += gridDim.x * blockDim.x;
+    }
+}
+
+template<typename T>
+__global__ void mirrorKernel(T            * __restrict__ inData ,
+                             T            * __restrict__ outData,
+                             unsigned int                size   ) {
+
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    while (i < size) {
+
+        outData[i] = inData[i] * std::pow(-1.0, i);
+        i += gridDim.x * blockDim.x;
+    }
 }
 
 template <typename Tdata>
@@ -116,5 +130,16 @@ void cuda_impl<Tdata>::op::divScalarInPlace(Tdata * __restrict__ data ,
     dim3 threadsPerBlock(THREADS_PER_BLOCK);
     dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
     divScalarInPlaceKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(data, size, value);
+    check_cuda( cudaStreamSynchronize(0) );
+}
+
+template <typename Tdata>
+void cuda_impl<Tdata>::op::mirror(Tdata * __restrict__ inData ,
+                                  Tdata * __restrict__ outData,
+                                  unsigned int         size   ) {
+
+    dim3 threadsPerBlock(THREADS_PER_BLOCK);
+    dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
+    mirrorKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(inData, outData, size);
     check_cuda( cudaStreamSynchronize(0) );
 }

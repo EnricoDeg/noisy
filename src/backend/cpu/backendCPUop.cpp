@@ -100,3 +100,12 @@ void cpu_impl<Tdata>::op::divScalarInPlace(Tdata * __restrict__ data ,
     for (unsigned int i = 0; i < size; ++i)
         data[i] /= value;
 }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::op::mirror(Tdata * __restrict__ inData ,
+                                 Tdata * __restrict__ outData,
+                                 unsigned int         size   ) {
+
+    for (size_t i = 0; i < size; ++i)
+        outData[i] = inData[i] * Tdata(std::pow(-1.0, i));
+}

@@ -59,6 +59,8 @@ public:
     static Tdata * allocate(unsigned int elements) ;
     static void free(Tdata *data) ;
     static void copy(Tdata* dst, Tdata *src, unsigned int size);
+    static void copy_d2h(Tdata* dst, Tdata *src, unsigned int size);
+    static void copy_h2d(Tdata* dst, Tdata *src, unsigned int size);
     static void fill(Tdata * __restrict__ data, unsigned int size, Tdata value);
 };
 
@@ -78,6 +80,9 @@ public:
     static void divScalarInPlace(Tdata * __restrict__ data ,
                                  unsigned int         size ,
                                  Tdata                value);
+    static void mirror(Tdata * __restrict__ inData ,
+                       Tdata * __restrict__ outData,
+                       unsigned int         size   );
 };
 
 template<typename Tdata>
