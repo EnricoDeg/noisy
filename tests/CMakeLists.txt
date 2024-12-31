@@ -79,8 +79,25 @@ if (ENABLE_CUDA)
 endif()
 target_link_libraries(test_transformMatrix GTest::gtest_main)
 
+# Shearlet
+if(ENABLE_CUDA)
+    set_source_files_properties(shearlet/test_SLcoeffs.cpp PROPERTIES LANGUAGE CUDA)
+endif()
+add_executable( test_SLcoeffs
+                shearlet/test_SLcoeffs.cpp
+              )
+target_link_libraries(test_SLcoeffs noisy)
+target_link_libraries(test_SLcoeffs ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES})
+if (ENABLE_CUDA)
+    target_link_libraries(test_SLcoeffs ${CUDA_LIBRARIES})
+    set_property(TARGET test_SLcoeffs PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    target_link_libraries (test_SLcoeffs ${CUFFT_LIBRARIES} ${CUALGO_LIBRARIES})
+endif()
+target_link_libraries(test_SLcoeffs GTest::gtest_main)
+
 # Add all tests to GoogleTest
 include(GoogleTest)
 gtest_discover_tests(test_DSmatrix)
 gtest_discover_tests(test_FourierTransform)
 gtest_discover_tests(test_transformMatrix)
+gtest_discover_tests(test_SLcoeffs)
