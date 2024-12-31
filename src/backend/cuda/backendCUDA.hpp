@@ -83,6 +83,9 @@ public:
     static void mirror(Tdata * __restrict__ inData ,
                        Tdata * __restrict__ outData,
                        unsigned int         size   );
+    static void applyThreshold(Tdata        * __restrict__ inData   ,
+                               Tdata                       threshold,
+                               unsigned int                size     );
 };
 
 template<typename Tdata>

@@ -109,3 +109,13 @@ void cpu_impl<Tdata>::op::mirror(Tdata * __restrict__ inData ,
     for (size_t i = 0; i < size; ++i)
         outData[i] = inData[i] * Tdata(std::pow(-1.0, i));
 }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::op::applyThreshold(Tdata        * __restrict__ data     ,
+                                         Tdata                       threshold,
+                                         unsigned int                size     ) {
+
+    for (unsigned int i = 0; i < size; ++i)
+        if (std::abs(data[i]) < std::abs(threshold))
+            data[i] = 0 ;
+}

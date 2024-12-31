@@ -86,6 +86,20 @@ __global__ void mirrorKernel(T            * __restrict__ inData ,
     }
 }
 
+template<typename T>
+__global__ void applyThresholdKernel(T            * __restrict__ data     ,
+                                     T                           threshold,
+                                     unsigned int                size     ) {
+
+    unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
+    while (i < size) {
+
+        if (abs(data[i]) < abs(threshold))
+            data[i] = 0;
+        i += gridDim.x * blockDim.x;
+    }
+}
+
 template <typename Tdata>
 void cuda_impl<Tdata>::op::normalize(Tdata * __restrict__ data, unsigned int size) {
 
@@ -141,5 +155,16 @@ void cuda_impl<Tdata>::op::mirror(Tdata * __restrict__ inData ,
     dim3 threadsPerBlock(THREADS_PER_BLOCK);
     dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
     mirrorKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(inData, outData, size);
+    check_cuda( cudaStreamSynchronize(0) );
+}
+
+template <typename Tdata>
+void cuda_impl<Tdata>::op::applyThreshold(Tdata        * __restrict__ inData   ,
+                                          Tdata                       threshold,
+                                          unsigned int                size     ) {
+
+    dim3 threadsPerBlock(THREADS_PER_BLOCK);
+    dim3 blocksPerGrid(div_ceil(size, THREADS_PER_BLOCK));
+    applyThresholdKernel<Tdata><<<blocksPerGrid, threadsPerBlock>>>(inData, threshold, size);
     check_cuda( cudaStreamSynchronize(0) );
 }
