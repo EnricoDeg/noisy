@@ -165,6 +165,12 @@ void DSmatrix<Tdata, backend>::fliplr(unsigned int dim) {
     backend<Tdata>::op::fliplr(mData, dim, mRows, mCols);
 }
 
+template <typename Tdata, template <class> class backend>
+void DSmatrix<Tdata, backend>::applyThreshold(Tdata value) {
+
+    backend<Tdata>::op::applyThreshold(mData, value, mRows * mCols);
+}
+
 template class DSmatrix<float, cpu_impl>;
 template class DSmatrix<double, cpu_impl>;
 template class DSmatrix<std::complex<float>, cpu_impl>;

@@ -62,6 +62,7 @@ public:
     void normalize();
     void normSize();
     void fliplr(unsigned int dim);
+    void applyThreshold(Tdata value);
 
 private:
     unsigned int mRows;
