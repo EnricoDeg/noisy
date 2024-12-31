@@ -17,7 +17,8 @@ set(SOURCE_EXE  backend/cpu/backendCPUmemory.cpp
                 backend/cpu/backendCPUfourier.cpp
                 backend/cpu/backendCPUcomplex.cpp
                 dataStructure/DSmatrix.cpp
-                transform/transformMatrix.cpp)
+                transform/transformMatrix.cpp
+                shearlet/SLfilter.cpp)
 
 if (ENABLE_CUDA)
     set_source_files_properties(backend/cpu/backendCPUmemory.cpp PROPERTIES LANGUAGE CUDA)
@@ -25,6 +26,7 @@ if (ENABLE_CUDA)
     set_source_files_properties(backend/cpu/backendCPUtransform.cpp PROPERTIES LANGUAGE CUDA)
     set_source_files_properties(dataStructure/DSmatrix.cpp PROPERTIES LANGUAGE CUDA)
     set_source_files_properties(transform/transformMatrix.cpp PROPERTIES LANGUAGE CUDA)
+    set_source_files_properties(shearlet/SLfilter.cpp PROPERTIES LANGUAGE CUDA)
 
     set(SOURCE_CUDA backend/cuda/backendCUDAmemory.cu
                     backend/cuda/backendCUDAop.cu
