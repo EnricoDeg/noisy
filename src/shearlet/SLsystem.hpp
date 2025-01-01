@@ -80,7 +80,7 @@ public:
         assert(i < m_coeffs.size());
 
         DSmatrix<Tdata, backend>* mat = m_coeffs[i];
-        backend<Tdata>::memory::fill(mat->data, mat->size(), Tdata(0));
+        backend<Tdata>::memory::fill(mat->data(), mat->size(), Tdata(0));
     }
 
 private:

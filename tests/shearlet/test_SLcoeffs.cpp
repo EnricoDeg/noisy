@@ -67,6 +67,35 @@ TYPED_TEST(SLcoeffsTemplate, addElement_CPU) {
     test_equality(myMatrix2.data(), mat->data(), rows*cols);
 }
 
+TYPED_TEST(SLcoeffsTemplate, muteShearlet_CPU) {
+
+    SLcoeffs<TypeParam, cpu_impl> coeffs{};
+
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+
+    // first element
+    DSmatrix<TypeParam, cpu_impl> myMatrix1(rows, cols);
+    generate_random_values(myMatrix1.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    coeffs.addElement(myMatrix1);
+
+    // second element
+    DSmatrix<TypeParam, cpu_impl> myMatrix2(rows, cols);
+    generate_random_values(myMatrix2.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    coeffs.addElement(myMatrix2);
+
+    // mute
+    coeffs.muteShearlet(1);
+
+    // check second element (muted)
+    DSmatrix<TypeParam, cpu_impl> *mat = coeffs.getElement(1);
+    TypeParam * __restrict__ data = mat->data();
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        ASSERT_EQ(data[i], 0);
+}
+
+#ifdef CUDA
+
 TYPED_TEST(SLcoeffsTemplate, addElement_CUDA) {
 
     set_seed();
@@ -100,3 +129,39 @@ TYPED_TEST(SLcoeffsTemplate, addElement_CUDA) {
     test_copy_d2h(myMatrixCheck.data(), mat->data(), mat->size());
     test_equality(myMatrixCheck.data(), myMatrix2CPU.data(), rows*cols);
 }
+
+TYPED_TEST(SLcoeffsTemplate, muteShearlet_CUDA) {
+
+    set_seed();
+
+    SLcoeffs<TypeParam, cuda_impl> coeffs{};
+
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+
+    // first element
+    DSmatrix<TypeParam, cpu_impl> myMatrix1CPU(rows, cols);
+    generate_random_values(myMatrix1CPU.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cuda_impl> myMatrixCUDA(rows, cols);
+    test_copy_h2d(myMatrixCUDA.data(), myMatrix1CPU.data(), myMatrixCUDA.size());
+    coeffs.addElement(myMatrixCUDA);
+
+    // second element
+    DSmatrix<TypeParam, cpu_impl> myMatrix2CPU(rows, cols);
+    generate_random_values(myMatrix2CPU.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    test_copy_h2d(myMatrixCUDA.data(), myMatrix2CPU.data(), myMatrixCUDA.size());
+    coeffs.addElement(myMatrixCUDA);
+
+    // mute
+    coeffs.muteShearlet(1);
+
+    // check second element (muted)
+    DSmatrix<TypeParam, cuda_impl> *mat = coeffs.getElement(1);
+    DSmatrix<TypeParam, cpu_impl> myMatrixCheck(rows, cols);
+    test_copy_d2h(myMatrixCheck.data(), mat->data(), mat->size());
+
+    TypeParam * __restrict__ data = myMatrixCheck.data();
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        ASSERT_EQ(data[i], 0);
+}
+#endif
