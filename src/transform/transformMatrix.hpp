@@ -39,10 +39,15 @@ void downsample(const DSmatrix<Tdata, backend>& inMat ,
                       DSmatrix<Tdata, backend>& outMat);
 
 template <typename Tdata, template <class> class  backend>
-void upsample(const DSmatrix<Tdata, backend>& inMat ,
-                    unsigned int              dim   ,
-                    unsigned int              nzeros,
-                    DSmatrix<Tdata, backend>& outMat);
+t_dims upsample(const DSmatrix<Tdata, backend>& inMat ,
+                      unsigned int              dim   ,
+                      unsigned int              nzeros,
+                      DSmatrix<Tdata, backend>& outMat);
+
+template <typename Tdata, template <class> class  backend>
+t_dims upsample(const DSmatrix<Tdata, backend>& inMat ,
+                      unsigned int              dim   ,
+                      unsigned int              nzeros);
 
 template <typename Tdata, template <class> class  backend>
 void pad(const DSmatrix<Tdata, backend>& inMat ,

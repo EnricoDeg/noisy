@@ -61,12 +61,23 @@ void downsample(const DSmatrix<Tdata, backend>& inMat  ,
 }
 
 template <typename Tdata, template <class> class  backend>
-void upsample(const DSmatrix<Tdata, backend>& inMat  ,
+t_dims upsample(const DSmatrix<Tdata, backend>& inMat  ,
                     unsigned int              dim    ,
                     unsigned int              nzeros ,
                     DSmatrix<Tdata, backend>& outMat ) {
 
     t_dims dims = inMat.dims();
+
+    if (outMat.is_empty()) {\
+        std::cout << "empty output matrix, return only dimensions" << std::endl;
+        t_dims dimsOutCompute;
+        if (dim == 0)
+            dimsOutCompute = {.rows = (dims.rows-1)*(nzeros)+dims.rows, .cols = dims.cols};
+        else
+            dimsOutCompute = {.rows = dims.rows, .cols = (dims.cols-1)*(nzeros)+dims.cols};
+        return dimsOutCompute;
+    }
+
     t_dims dimsOut = outMat.dims();
     if (dim == 0) {
         assert(dimsOut.rows == (dims.rows-1)*(nzeros)+dims.rows);
@@ -77,6 +88,17 @@ void upsample(const DSmatrix<Tdata, backend>& inMat  ,
     Tdata * __restrict__ inData = inMat.data();
     Tdata * __restrict__ outData = outMat.data();
     backend<Tdata>::transform::upsample(inData, outData, dim, nzeros, dims.rows, dims.cols);
+
+    return dimsOut;
+}
+
+template <typename Tdata, template <class> class  backend>
+t_dims upsample(const DSmatrix<Tdata, backend>& inMat  ,
+                      unsigned int              dim    ,
+                      unsigned int              nzeros ) {
+
+    DSmatrix<Tdata, backend> emptyMat{};
+    return upsample(inMat, dim, nzeros, emptyMat);
 }
 
 template <typename Tdata, template <class> class  backend>
@@ -215,37 +237,42 @@ template void downsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inM
 #endif
 
 // CPU
-template void upsample(const DSmatrix<float, cpu_impl>& inMat  ,
-                             unsigned int               dim    ,
-                             unsigned int               nzeros ,
-                             DSmatrix<float, cpu_impl>& outMat );
-template void upsample(const DSmatrix<std::complex<float>, cpu_impl>& inMat  ,
-                             unsigned int                             dim    ,
-                             unsigned int                             nzeros ,
-                             DSmatrix<std::complex<float>, cpu_impl>& outMat );
-template void upsample(const DSmatrix<double, cpu_impl>& inMat  ,
-                             unsigned int                dim    ,
-                             unsigned int                nzeros ,
-                             DSmatrix<double, cpu_impl>& outMat );
-template void upsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
-                             unsigned int                              dim    ,
-                             unsigned int                              nzeros ,
-                             DSmatrix<std::complex<double>, cpu_impl>& outMat );
+template t_dims upsample(const DSmatrix<float, cpu_impl>& inMat  ,
+                               unsigned int               dim    ,
+                               unsigned int               nzeros ,
+                               DSmatrix<float, cpu_impl>& outMat );
+template t_dims upsample(const DSmatrix<std::complex<float>, cpu_impl>& inMat  ,
+                               unsigned int                             dim    ,
+                               unsigned int                             nzeros ,
+                               DSmatrix<std::complex<float>, cpu_impl>& outMat );
+template t_dims upsample(const DSmatrix<double, cpu_impl>& inMat  ,
+                               unsigned int                dim    ,
+                               unsigned int                nzeros ,
+                               DSmatrix<double, cpu_impl>& outMat );
+template t_dims upsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
+                               unsigned int                              dim    ,
+                               unsigned int                              nzeros ,
+                               DSmatrix<std::complex<double>, cpu_impl>& outMat );
+
+template t_dims upsample(const DSmatrix<float, cpu_impl>& inMat  ,
+                               unsigned int               dim    ,
+                               unsigned int               nzeros );
+
 // CUDA
 #ifdef CUDA
-template void upsample(const DSmatrix<float, cuda_impl>& inMat  ,
+template t_dims upsample(const DSmatrix<float, cuda_impl>& inMat  ,
                              unsigned int                dim    ,
                              unsigned int                nzeros ,
                              DSmatrix<float, cuda_impl>& outMat );
-template void upsample(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat  ,
+template t_dims upsample(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat  ,
                              unsigned int                                 dim    ,
                              unsigned int                                 nzeros ,
                              DSmatrix<thrust::complex<float>, cuda_impl>& outMat );
-template void upsample(const DSmatrix<double, cuda_impl>& inMat  ,
+template t_dims upsample(const DSmatrix<double, cuda_impl>& inMat  ,
                              unsigned int                 dim    ,
                              unsigned int                 nzeros ,
                              DSmatrix<double, cuda_impl>& outMat );
-template void upsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat  ,
+template t_dims upsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat  ,
                              unsigned int                                  dim    ,
                              unsigned int                                  nzeros ,
                              DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
