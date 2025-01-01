@@ -41,6 +41,7 @@ class DSmatrix
 {
 public:
     // constructors
+    DSmatrix();
     DSmatrix(unsigned int rows, unsigned int cols);
     DSmatrix(t_dims dims);
     DSmatrix(unsigned int rows, unsigned int cols, Tdata value);
@@ -59,6 +60,7 @@ public:
     Tdata * end() const;
     t_dims dims() const;
     unsigned int size() const;
+    bool is_empty() const;
     // in place operations
     void normalize();
     void normSize();

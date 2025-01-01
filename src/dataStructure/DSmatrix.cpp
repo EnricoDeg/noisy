@@ -36,6 +36,14 @@
 
 // constructors
 template <typename Tdata, template <class> class backend>
+DSmatrix<Tdata, backend>::DSmatrix()
+: mRows(0),
+  mCols(0),
+  mNeedAlloc(false),
+  mData(nullptr)
+{ }
+
+template <typename Tdata, template <class> class backend>
 DSmatrix<Tdata, backend>::DSmatrix(unsigned int rows, unsigned int cols)
 : mRows(rows),
   mCols(cols),
@@ -153,6 +161,13 @@ inline
 unsigned int DSmatrix<Tdata, backend>::size() const
 {
     return mRows * mCols;
+}
+
+template <typename Tdata, template <class> class backend>
+inline
+bool DSmatrix<Tdata, backend>::is_empty() const
+{
+    return (mRows == 0 && mCols == 0 && mData == nullptr);
 }
 
 // in place operations
