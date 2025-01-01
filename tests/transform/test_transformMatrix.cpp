@@ -83,6 +83,21 @@ TEST(transform, upsample_dim0_CPU) {
         }
 }
 
+TEST(transform, upsample_empty_CPU) {
+
+    unsigned int rows = 32;
+    unsigned int cols = 64;
+    unsigned int nzeros = 2;
+    unsigned int rowsUp = (rows-1)*(nzeros)+rows;
+    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
+    generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
+
+    t_dims dimOut = upsample(myMatrix, 0, nzeros);
+
+    ASSERT_EQ(dimOut.rows, rowsUp);
+    ASSERT_EQ(dimOut.cols, cols  );
+}
+
 TEST(transform, pad_CPU) {
 
     unsigned int rows = 32;
