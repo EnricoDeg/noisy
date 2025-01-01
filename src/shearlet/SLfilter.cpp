@@ -506,4 +506,15 @@ DSmatrix<Tdata, backend> SLfilterGenerator(SLFilterType type)
         backend<Tdata>::memory::copy_h2d(vecOut.data(), v.data(), N);
         return vecOut;
     }
+
+    // suppress warning
+    // need better handling
+    DSmatrix<Tdata, backend> vecOut(1, 1);
+    return vecOut;
 }
+
+// INSTANTIATE
+
+// CPU
+template DSmatrix<float, cpu_impl> SLfilterMirror(DSmatrix<float, cpu_impl>& vecIn);
+template DSmatrix<float, cpu_impl> SLfilterGenerator(SLFilterType type);
