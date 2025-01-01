@@ -45,6 +45,15 @@ DSmatrix<Tdata, backend>::DSmatrix(unsigned int rows, unsigned int cols)
 }
 
 template <typename Tdata, template <class> class backend>
+DSmatrix<Tdata, backend>::DSmatrix(t_dims dims)
+: mRows(dims.rows),
+  mCols(dims.cols),
+  mNeedAlloc(true)
+{
+    mData = backend<Tdata>::memory::allocate(dims.rows * dims.cols);
+}
+
+template <typename Tdata, template <class> class backend>
 DSmatrix<Tdata, backend>::DSmatrix(unsigned int rows, unsigned int cols, Tdata value)
 : DSmatrix(rows, cols)
 {

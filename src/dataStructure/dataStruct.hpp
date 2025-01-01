@@ -42,6 +42,7 @@ class DSmatrix
 public:
     // constructors
     DSmatrix(unsigned int rows, unsigned int cols);
+    DSmatrix(t_dims dims);
     DSmatrix(unsigned int rows, unsigned int cols, Tdata value);
     DSmatrix(unsigned int rows, unsigned int cols, Tdata *ptr);
     DSmatrix(const DSmatrix& inMat);
