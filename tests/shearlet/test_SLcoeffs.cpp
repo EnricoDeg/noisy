@@ -94,6 +94,53 @@ TYPED_TEST(SLcoeffsTemplate, muteShearlet_CPU) {
         ASSERT_EQ(data[i], 0);
 }
 
+TYPED_TEST(SLcoeffsTemplate, applyThreshold_CPU) {
+
+    SLcoeffs<TypeParam, cpu_impl> coeffs{};
+
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+
+    // first element
+    DSmatrix<TypeParam, cpu_impl> myMatrix1(rows, cols);
+    generate_random_values(myMatrix1.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    coeffs.addElement(myMatrix1);
+
+    // second element
+    DSmatrix<TypeParam, cpu_impl> myMatrix2(rows, cols);
+    generate_random_values(myMatrix2.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    coeffs.addElement(myMatrix2);
+
+    // threshold
+    std::vector<TypeParam> threshold{};
+    threshold.push_back(1.0);
+    threshold.push_back(0.5);
+
+    coeffs.applyThreshold(threshold);
+
+    // check first element
+    myMatrix1.applyThreshold(threshold[0]);
+    TypeParam * __restrict__ refData = myMatrix1.data();
+    DSmatrix<TypeParam, cpu_impl> *mat = coeffs.getElement(0);
+    TypeParam * __restrict__ data = mat->data();
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        if (std::abs(data[i]) < threshold[0])
+            ASSERT_EQ(data[i], 0);
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        ASSERT_EQ(data[i], refData[i]);
+
+    // check second element
+    myMatrix2.applyThreshold(threshold[1]);
+    refData = myMatrix2.data();
+    mat = coeffs.getElement(1);
+    data = mat->data();
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        if (std::abs(data[i]) < threshold[1])
+            ASSERT_EQ(data[i], 0);
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        ASSERT_EQ(data[i], refData[i]);
+}
+
 #ifdef CUDA
 
 TYPED_TEST(SLcoeffsTemplate, addElement_CUDA) {
@@ -164,4 +211,60 @@ TYPED_TEST(SLcoeffsTemplate, muteShearlet_CUDA) {
     for (unsigned int i = 0; i < rows*cols; ++i)
         ASSERT_EQ(data[i], 0);
 }
+
+TYPED_TEST(SLcoeffsTemplate, applyThreshold_CUDA) {
+
+    set_seed();
+
+    SLcoeffs<TypeParam, cuda_impl> coeffs{};
+
+    unsigned int rows = 1024;
+    unsigned int cols =  512;
+
+    // first element
+    DSmatrix<TypeParam, cpu_impl> myMatrix1CPU(rows, cols);
+    generate_random_values(myMatrix1CPU.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    DSmatrix<TypeParam, cuda_impl> myMatrixCUDA(rows, cols);
+    test_copy_h2d(myMatrixCUDA.data(), myMatrix1CPU.data(), myMatrixCUDA.size());
+    coeffs.addElement(myMatrixCUDA);
+
+    // second element
+    DSmatrix<TypeParam, cpu_impl> myMatrix2CPU(rows, cols);
+    generate_random_values(myMatrix2CPU.data(), rows*cols, TypeParam(-10.0), TypeParam(10.0));
+    test_copy_h2d(myMatrixCUDA.data(), myMatrix2CPU.data(), myMatrixCUDA.size());
+    coeffs.addElement(myMatrixCUDA);
+
+    // threshold
+    std::vector<TypeParam> threshold{};
+    threshold.push_back(1.0);
+    threshold.push_back(0.5);
+
+    coeffs.applyThreshold(threshold);
+
+    // check first element
+    myMatrix1CPU.applyThreshold(threshold[0]);
+    TypeParam * __restrict__ refData = myMatrix1CPU.data();
+    DSmatrix<TypeParam, cuda_impl> *mat = coeffs.getElement(0);
+    DSmatrix<TypeParam, cpu_impl> myMatrixCheck(rows, cols);
+    test_copy_d2h(myMatrixCheck.data(), mat->data(), mat->size());
+    TypeParam * __restrict__ data = myMatrixCheck.data();
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        if (std::abs(data[i]) < threshold[0])
+            ASSERT_EQ(data[i], 0);
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        ASSERT_EQ(data[i], refData[i]);
+
+    // check second element
+    myMatrix2CPU.applyThreshold(threshold[1]);
+    refData = myMatrix2CPU.data();
+    mat = coeffs.getElement(1);
+    test_copy_d2h(myMatrixCheck.data(), mat->data(), mat->size());
+    data = myMatrixCheck.data();
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        if (std::abs(data[i]) < threshold[1])
+            ASSERT_EQ(data[i], 0);
+    for (unsigned int i = 0; i < rows*cols; ++i)
+        ASSERT_EQ(data[i], refData[i]);
+}
+
 #endif
