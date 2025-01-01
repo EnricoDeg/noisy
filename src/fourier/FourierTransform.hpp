@@ -33,7 +33,10 @@
 #include <memory>
 
 #include "src/backend/cpu/backendCPUfourier.hpp"
+#ifdef CUDA
 #include "src/backend/cuda/backendCUDAfourier.hpp"
+#endif
+
 #include "src/dataStructure/dataStruct.hpp"
 #include "src/transform/transformMatrix.hpp"
 
@@ -225,10 +228,12 @@ struct FourierTransform_helper<float, cpu_impl> {
     using type = FourierTransformImpl<float, cpu_fft_impl, cpu_impl, cpu_complex_impl>;
 };
 
+#ifdef CUDA
 template<>
 struct FourierTransform_helper<float, cuda_impl> {
     using type = FourierTransformImpl<float, cuda_fft_impl, cuda_impl, cuda_complex_impl>;
 };
+#endif
 
 template<typename Tdata, template <class> class  backend>
 using FourierTransform = typename FourierTransform_helper<Tdata, backend>::type;

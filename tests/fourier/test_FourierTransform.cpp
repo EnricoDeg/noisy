@@ -32,16 +32,16 @@
 
 #include "src/backend/cpu/backendCPU.hpp"
 
-#include <gtest/gtest.h>
 #ifdef CUDA
 #include "src/backend/cuda/backendCUDA.hpp"
-#include "tests/utils/test_utils.hpp"
 #endif
+#include "tests/utils/test_utils.hpp"
 
 #include "src/fourier/FourierTransform.hpp"
 
-# define M_PI 3.14159265358979323846
+#include <gtest/gtest.h>
 
+# define M_PI 3.14159265358979323846
 
 template<typename T>
 void fftshiftMatrixCPU(T * idata, T * odata,

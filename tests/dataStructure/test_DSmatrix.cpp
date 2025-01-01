@@ -32,12 +32,12 @@
 
 #include "src/dataStructure/dataStruct.hpp"
 #include "src/backend/cpu/backendCPU.hpp"
+#ifdef CUDA
 #include "src/backend/cuda/backendCUDA.hpp"
+#endif
+#include "tests/utils/test_utils.hpp"
 
 #include <gtest/gtest.h>
-#ifdef CUDA
-#include "tests/utils/test_utils.hpp"
-#endif
 
 template <class T>
 class DSmatrixTemplate : public testing::Test {};

@@ -195,6 +195,7 @@ template void downsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  
                                unsigned int                              stride ,
                                DSmatrix<std::complex<double>, cpu_impl>& outMat );
 // CUDA
+#ifdef CUDA
 template void downsample(const DSmatrix<float, cuda_impl>& inMat  ,
                                unsigned int                dim    ,
                                unsigned int                stride ,
@@ -211,6 +212,7 @@ template void downsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inM
                                unsigned int                                  dim    ,
                                unsigned int                                  stride ,
                                DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
+#endif
 
 // CPU
 template void upsample(const DSmatrix<float, cpu_impl>& inMat  ,
@@ -230,6 +232,7 @@ template void upsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
                              unsigned int                              nzeros ,
                              DSmatrix<std::complex<double>, cpu_impl>& outMat );
 // CUDA
+#ifdef CUDA
 template void upsample(const DSmatrix<float, cuda_impl>& inMat  ,
                              unsigned int                dim    ,
                              unsigned int                nzeros ,
@@ -246,6 +249,7 @@ template void upsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat
                              unsigned int                                  dim    ,
                              unsigned int                                  nzeros ,
                              DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
+#endif
 
 // CPU
 template void pad(const DSmatrix<float, cpu_impl>& inMat ,
@@ -256,7 +260,9 @@ template void pad(const DSmatrix<double, cpu_impl>& inMat ,
                         DSmatrix<double, cpu_impl>& outMat);
 template void pad(const DSmatrix<std::complex<double>, cpu_impl>& inMat ,
                         DSmatrix<std::complex<double>, cpu_impl>& outMat);
+
 // CUDA
+#ifdef CUDA
 template void pad(const DSmatrix<float, cuda_impl>& inMat ,
                         DSmatrix<float, cuda_impl>& outMat);
 template void pad(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat ,
@@ -265,6 +271,7 @@ template void pad(const DSmatrix<double, cuda_impl>& inMat ,
                         DSmatrix<double, cuda_impl>& outMat);
 template void pad(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat ,
                         DSmatrix<thrust::complex<double>, cuda_impl>& outMat);
+#endif
 
 // CPU
 template void dshear(const DSmatrix<float, cpu_impl>& inMat ,
@@ -283,7 +290,9 @@ template void dshear(const DSmatrix<std::complex<double>, cpu_impl>& inMat ,
                            DSmatrix<std::complex<double>, cpu_impl>& outMat,
                            long int                                  k     ,
                            unsigned int                              dim   );
+
 // CUDA
+#ifdef CUDA
 template void dshear(const DSmatrix<float, cuda_impl>& inMat ,
                            DSmatrix<float, cuda_impl>& outMat,
                            long int                    k     ,
@@ -300,6 +309,7 @@ template void dshear(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat ,
                            DSmatrix<thrust::complex<double>, cuda_impl>& outMat,
                            long int                                      k     ,
                            unsigned int                                  dim   );
+#endif
 
 // CPU
 template void transpose(const DSmatrix<float, cpu_impl>& inMat ,
@@ -310,7 +320,9 @@ template void transpose(const DSmatrix<double, cpu_impl>& inMat ,
                               DSmatrix<double, cpu_impl>& outMat);
 template void transpose(const DSmatrix<std::complex<double>, cpu_impl>& inMat ,
                               DSmatrix<std::complex<double>, cpu_impl>& outMat);
+
 // CUDA
+#ifdef CUDA
 template void transpose(const DSmatrix<float, cuda_impl>& inMat ,
                               DSmatrix<float, cuda_impl>& outMat);
 template void transpose(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat ,
@@ -319,6 +331,7 @@ template void transpose(const DSmatrix<double, cuda_impl>& inMat ,
                               DSmatrix<double, cuda_impl>& outMat);
 template void transpose(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat ,
                               DSmatrix<thrust::complex<double>, cuda_impl>& outMat);
+#endif
 
 // CPU
 template void normL2(const DSmatrix<float, cpu_impl>&  inMat,
@@ -329,7 +342,9 @@ template void normL2(const DSmatrix<double, cpu_impl>&  inMat,
                            double                      *out  );
 template void normL2(const DSmatrix<std::complex<double>, cpu_impl>&  inMat,
                            std::complex<double>                      *out  );
+
 // CUDA
+#ifdef CUDA
 template void normL2(const DSmatrix<float, cuda_impl>&  inMat,
                            float                       *out  );
 template void normL2(const DSmatrix<thrust::complex<float>, cuda_impl>&  inMat,
@@ -338,3 +353,4 @@ template void normL2(const DSmatrix<double, cuda_impl>&  inMat,
                            double                       *out  );
 template void normL2(const DSmatrix<thrust::complex<double>, cuda_impl>&  inMat,
                            thrust::complex<double>                       *out  );
+#endif

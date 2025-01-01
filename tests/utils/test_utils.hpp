@@ -30,6 +30,16 @@
 #ifndef TEST_UTILS_HPP_
 #define TEST_UTILS_HPP_
 
+#include <complex>
+#include <stdlib.h>
+#include <time.h>
+
+#ifdef CUDA
+#include <cuda.h>
+#endif
+
+#include <gtest/gtest.h>
+
 void set_seed() {
 
     srand((unsigned) time(NULL));

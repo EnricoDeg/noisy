@@ -31,12 +31,14 @@
 #include <iostream>
 
 #include "src/dataStructure/dataStruct.hpp"
-#include "src/transform/transformMatrix.hpp"
 #include "src/backend/cpu/backendCPU.hpp"
+#ifdef CUDA
 #include "src/backend/cuda/backendCUDA.hpp"
+#endif
+#include "src/transform/transformMatrix.hpp"
+#include "tests/utils/test_utils.hpp"
 
 #include <gtest/gtest.h>
-#include "tests/utils/test_utils.hpp"
 
 template<typename T>
 void transposeCPU(T *inData, T *outData,

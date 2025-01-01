@@ -32,9 +32,7 @@
 #include "src/shearlet/SLsystem.hpp"
 
 #include <gtest/gtest.h>
-#ifdef CUDA
 #include "tests/utils/test_utils.hpp"
-#endif
 
 template <class T>
 class SLcoeffsTemplate : public testing::Test {};

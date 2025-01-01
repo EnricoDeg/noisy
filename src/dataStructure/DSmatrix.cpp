@@ -171,11 +171,18 @@ void DSmatrix<Tdata, backend>::applyThreshold(Tdata value) {
     backend<Tdata>::op::applyThreshold(mData, value, mRows * mCols);
 }
 
+// INSTANTIATION
+
+// CPU
 template class DSmatrix<float, cpu_impl>;
 template class DSmatrix<double, cpu_impl>;
 template class DSmatrix<std::complex<float>, cpu_impl>;
 template class DSmatrix<std::complex<double>, cpu_impl>;
+
+// CUDA
+#ifdef CUDA
 template class DSmatrix<float, cuda_impl>;
 template class DSmatrix<double, cuda_impl>;
 template class DSmatrix<thrust::complex<float>, cuda_impl>;
 template class DSmatrix<thrust::complex<double>, cuda_impl>;
+#endif
