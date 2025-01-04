@@ -49,9 +49,10 @@ enum SLFilterType {
 };
 
 template <typename Tdata, template <class> class  backend>
-DSmatrix<Tdata, backend> SLfilterMirror(DSmatrix<Tdata, backend>& vecIn);
+struct SLfilter {
+    static DSmatrix<Tdata, backend> mirror(DSmatrix<Tdata, backend>& vecIn);
 
-template <typename Tdata, template <class> class  backend>
-DSmatrix<Tdata, backend> SLfilterGenerator(SLFilterType type);
+    static DSmatrix<Tdata, backend> generator(SLFilterType type);
+};
 
 #endif

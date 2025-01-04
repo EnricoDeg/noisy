@@ -29,6 +29,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <optional>
 
 #include "src/dataStructure/dataStruct.hpp"
 #include "src/backend/cpu/backendCPU.hpp"
@@ -72,7 +73,7 @@ TEST(transform, upsample_dim0_CPU) {
     DSmatrix<float, cpu_impl> myMatrix(rows, cols);
     generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
     DSmatrix<float, cpu_impl> myMatrixUp(rowsUp, cols);
-    upsample(myMatrix, 0, nzeros, myMatrixUp);
+    upsample(myMatrix, 0, nzeros, &myMatrixUp);
     for (unsigned int j = 0; j < cols; ++j)
         ASSERT_EQ(myMatrixUp(0,j), myMatrix(0,j));
     for (unsigned int i = 1; i < rows; ++i)
@@ -178,7 +179,7 @@ TEST(transform, convolve_CPU) {
     DSmatrix<float, cpu_impl> myMatrix(rows, cols, 2.0);
     DSmatrix<float, cpu_impl> filter(fRows, fCols, 0.25);
     DSmatrix<float, cpu_impl> result(rows + fRows - 1, cols + fCols - 1);
-    convolve<float, cpu_impl, cpu_complex_impl>(myMatrix, filter, result);
+    convolve<float, cpu_impl>(myMatrix, filter, &result);
 
     // check results
     ASSERT_EQ(result(0                ,0               ), 0.5);
@@ -196,6 +197,22 @@ TEST(transform, convolve_CPU) {
     for (unsigned int i = 1; i < rows + fRows - 2; ++i)
         for (unsigned int j = 1; j < cols + fCols - 2; ++j)
             ASSERT_EQ(result(i,j), 2);
+}
+
+TEST(transform, convolve_dims_CPU) {
+
+    unsigned int rows  = 5;
+    unsigned int cols  = 5;
+    unsigned int fRows = 2;
+    unsigned int fCols = 2;
+    DSmatrix<float, cpu_impl> myMatrix(rows, cols, 2.0);
+    DSmatrix<float, cpu_impl> filter(fRows, fCols, 0.25);
+    DSmatrix<float, cpu_impl> result(rows + fRows - 1, cols + fCols - 1);
+    t_dims outDims = convolve<float, cpu_impl>(myMatrix, filter);
+
+    // check results
+    ASSERT_EQ(outDims.rows, rows + fRows - 1);
+    ASSERT_EQ(outDims.cols, cols + fCols - 1);
 }
 
 #ifdef CUDA

@@ -35,7 +35,7 @@
 #include "src/shearlet/SLfilter.hpp"
 
 template <typename Tdata, template <class> class  backend>
-DSmatrix<Tdata, backend> SLfilterMirror(DSmatrix<Tdata, backend>& vecIn)
+DSmatrix<Tdata, backend> SLfilter<Tdata, backend>::mirror(DSmatrix<Tdata, backend>& vecIn)
 {
 
     size_t N = vecIn.size();
@@ -45,7 +45,7 @@ DSmatrix<Tdata, backend> SLfilterMirror(DSmatrix<Tdata, backend>& vecIn)
 }
 
 template <typename Tdata, template <class> class  backend>
-DSmatrix<Tdata, backend> SLfilterGenerator(SLFilterType type)
+DSmatrix<Tdata, backend> SLfilter<Tdata, backend>::generator(SLFilterType type)
 {
 
     if (type == SL_SCALING) {
@@ -516,5 +516,4 @@ DSmatrix<Tdata, backend> SLfilterGenerator(SLFilterType type)
 // INSTANTIATE
 
 // CPU
-template DSmatrix<float, cpu_impl> SLfilterMirror(DSmatrix<float, cpu_impl>& vecIn);
-template DSmatrix<float, cpu_impl> SLfilterGenerator(SLFilterType type);
+template struct SLfilter<float, cpu_impl>;

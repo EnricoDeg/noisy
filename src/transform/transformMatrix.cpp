@@ -60,46 +60,37 @@ void downsample(const DSmatrix<Tdata, backend>& inMat  ,
     backend<Tdata>::transform::downsample(inData, outData, dim, stride, dims.rows, dims.cols);
 }
 
-template <typename Tdata, template <class> class  backend>
-t_dims upsample(const DSmatrix<Tdata, backend>& inMat  ,
-                    unsigned int              dim    ,
-                    unsigned int              nzeros ,
-                    DSmatrix<Tdata, backend>& outMat ) {
+// template <typename Tdata, template <class> class  backend>
+// t_dims upsample(const DSmatrix<Tdata, backend>& inMat  ,
+//                     unsigned int              dim    ,
+//                     unsigned int              nzeros ,
+//                     DSmatrix<Tdata, backend>* outMat = nullptr) {
 
-    t_dims dims = inMat.dims();
+//     t_dims dims = inMat.dims();
 
-    if (outMat.is_empty()) {\
-        std::cout << "empty output matrix, return only dimensions" << std::endl;
-        t_dims dimsOutCompute;
-        if (dim == 0)
-            dimsOutCompute = {.rows = (dims.rows-1)*(nzeros)+dims.rows, .cols = dims.cols};
-        else
-            dimsOutCompute = {.rows = dims.rows, .cols = (dims.cols-1)*(nzeros)+dims.cols};
-        return dimsOutCompute;
-    }
+//     if (outMat == nullptr) {
+//         std::cout << "empty output matrix, return only dimensions" << std::endl;
+//         t_dims dimsOutCompute;
+//         if (dim == 0)
+//             dimsOutCompute = {.rows = (dims.rows-1)*(nzeros)+dims.rows, .cols = dims.cols};
+//         else
+//             dimsOutCompute = {.rows = dims.rows, .cols = (dims.cols-1)*(nzeros)+dims.cols};
+//         return dimsOutCompute;
+//     }
 
-    t_dims dimsOut = outMat.dims();
-    if (dim == 0) {
-        assert(dimsOut.rows == (dims.rows-1)*(nzeros)+dims.rows);
-    } else {
-        assert(dimsOut.cols == (dims.cols-1)*(nzeros)+dims.cols);
-    }
+//     t_dims dimsOut = outMat.dims();
+//     if (dim == 0) {
+//         assert(dimsOut.rows == (dims.rows-1)*(nzeros)+dims.rows);
+//     } else {
+//         assert(dimsOut.cols == (dims.cols-1)*(nzeros)+dims.cols);
+//     }
 
-    Tdata * __restrict__ inData = inMat.data();
-    Tdata * __restrict__ outData = outMat.data();
-    backend<Tdata>::transform::upsample(inData, outData, dim, nzeros, dims.rows, dims.cols);
+//     Tdata * __restrict__ inData = inMat.data();
+//     Tdata * __restrict__ outData = outMat.data();
+//     backend<Tdata>::transform::upsample(inData, outData, dim, nzeros, dims.rows, dims.cols);
 
-    return dimsOut;
-}
-
-template <typename Tdata, template <class> class  backend>
-t_dims upsample(const DSmatrix<Tdata, backend>& inMat  ,
-                      unsigned int              dim    ,
-                      unsigned int              nzeros ) {
-
-    DSmatrix<Tdata, backend> emptyMat{};
-    return upsample(inMat, dim, nzeros, emptyMat);
-}
+//     return dimsOut;
+// }
 
 template <typename Tdata, template <class> class  backend>
 void pad(const DSmatrix<Tdata, backend>& inMat ,
@@ -155,49 +146,7 @@ void normL2(const DSmatrix<Tdata, backend>&  inMat,
     backend<Tdata>::transform::normL2(inMat.data(), out, inMat.size());
 }
 
-template <typename Tdata, template <class> class  backend,
-                          template <class> class  backendC>
-void convolve(const DSmatrix<Tdata, backend>&  inMat ,
-              const DSmatrix<Tdata, backend>&  filter,
-                    DSmatrix<Tdata, backend>&  outMat) {
-
-    t_dims inDims  = inMat.dims();
-    t_dims fDims   = filter.dims();
-    t_dims outDims = outMat.dims();
-    assert(outDims.rows == inDims.rows + fDims.rows - 1);
-    assert(outDims.cols == inDims.cols + fDims.cols - 1);
-
-    DSmatrix<Tdata, backend> inMatPadded(outDims.rows, outDims.cols);
-    backendC<Tdata>::op::padMatrix(inMat.data(),
-                                   inMatPadded.data(),
-                                   inDims.rows,
-                                   inDims.cols,
-                                   outDims.rows,
-                                   outDims.cols);
-
-    DSmatrix<Tdata, backend> filterPadded(outDims.rows, outDims.cols);
-    backendC<Tdata>::op::padMatrix(filter.data(),
-                                   filterPadded.data(),
-                                   fDims.rows,
-                                   fDims.cols,
-                                   outDims.rows,
-                                   outDims.cols);
-
-    backendC<Tdata>::op::convData(inMatPadded.data(),
-                                  filterPadded.data(),
-                                  outMat.data(),
-                                  inDims.rows,
-                                  inDims.cols,
-                                  fDims.rows,
-                                  fDims.cols);
-}
-
 // INSTANTIATE
-
-template void convolve<float, cpu_impl, cpu_complex_impl>
-                     (const DSmatrix<float, cpu_impl>&  inMat ,
-                      const DSmatrix<float, cpu_impl>&  filter,
-                            DSmatrix<float, cpu_impl>&  outMat);
 
 // CPU
 template void downsample(const DSmatrix<float, cpu_impl>& inMat  ,
@@ -236,47 +185,47 @@ template void downsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inM
                                DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
 #endif
 
-// CPU
-template t_dims upsample(const DSmatrix<float, cpu_impl>& inMat  ,
-                               unsigned int               dim    ,
-                               unsigned int               nzeros ,
-                               DSmatrix<float, cpu_impl>& outMat );
-template t_dims upsample(const DSmatrix<std::complex<float>, cpu_impl>& inMat  ,
-                               unsigned int                             dim    ,
-                               unsigned int                             nzeros ,
-                               DSmatrix<std::complex<float>, cpu_impl>& outMat );
-template t_dims upsample(const DSmatrix<double, cpu_impl>& inMat  ,
-                               unsigned int                dim    ,
-                               unsigned int                nzeros ,
-                               DSmatrix<double, cpu_impl>& outMat );
-template t_dims upsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
-                               unsigned int                              dim    ,
-                               unsigned int                              nzeros ,
-                               DSmatrix<std::complex<double>, cpu_impl>& outMat );
+// // CPU
+// template t_dims upsample(const DSmatrix<float, cpu_impl>& inMat  ,
+//                                unsigned int               dim    ,
+//                                unsigned int               nzeros ,
+//                                DSmatrix<float, cpu_impl>& outMat );
+// template t_dims upsample(const DSmatrix<std::complex<float>, cpu_impl>& inMat  ,
+//                                unsigned int                             dim    ,
+//                                unsigned int                             nzeros ,
+//                                DSmatrix<std::complex<float>, cpu_impl>& outMat );
+// template t_dims upsample(const DSmatrix<double, cpu_impl>& inMat  ,
+//                                unsigned int                dim    ,
+//                                unsigned int                nzeros ,
+//                                DSmatrix<double, cpu_impl>& outMat );
+// template t_dims upsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
+//                                unsigned int                              dim    ,
+//                                unsigned int                              nzeros ,
+//                                DSmatrix<std::complex<double>, cpu_impl>& outMat );
 
-template t_dims upsample(const DSmatrix<float, cpu_impl>& inMat  ,
-                               unsigned int               dim    ,
-                               unsigned int               nzeros );
+// template t_dims upsample(const DSmatrix<float, cpu_impl>& inMat  ,
+//                                unsigned int               dim    ,
+//                                unsigned int               nzeros );
 
-// CUDA
-#ifdef CUDA
-template t_dims upsample(const DSmatrix<float, cuda_impl>& inMat  ,
-                             unsigned int                dim    ,
-                             unsigned int                nzeros ,
-                             DSmatrix<float, cuda_impl>& outMat );
-template t_dims upsample(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat  ,
-                             unsigned int                                 dim    ,
-                             unsigned int                                 nzeros ,
-                             DSmatrix<thrust::complex<float>, cuda_impl>& outMat );
-template t_dims upsample(const DSmatrix<double, cuda_impl>& inMat  ,
-                             unsigned int                 dim    ,
-                             unsigned int                 nzeros ,
-                             DSmatrix<double, cuda_impl>& outMat );
-template t_dims upsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat  ,
-                             unsigned int                                  dim    ,
-                             unsigned int                                  nzeros ,
-                             DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
-#endif
+// // CUDA
+// #ifdef CUDA
+// template t_dims upsample(const DSmatrix<float, cuda_impl>& inMat  ,
+//                              unsigned int                dim    ,
+//                              unsigned int                nzeros ,
+//                              DSmatrix<float, cuda_impl>& outMat );
+// template t_dims upsample(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat  ,
+//                              unsigned int                                 dim    ,
+//                              unsigned int                                 nzeros ,
+//                              DSmatrix<thrust::complex<float>, cuda_impl>& outMat );
+// template t_dims upsample(const DSmatrix<double, cuda_impl>& inMat  ,
+//                              unsigned int                 dim    ,
+//                              unsigned int                 nzeros ,
+//                              DSmatrix<double, cuda_impl>& outMat );
+// template t_dims upsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat  ,
+//                              unsigned int                                  dim    ,
+//                              unsigned int                                  nzeros ,
+//                              DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
+// #endif
 
 // CPU
 template void pad(const DSmatrix<float, cpu_impl>& inMat ,
