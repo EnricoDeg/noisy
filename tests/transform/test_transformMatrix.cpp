@@ -215,6 +215,23 @@ TEST(transform, convolve_dims_CPU) {
     ASSERT_EQ(outDims.cols, cols + fCols - 1);
 }
 
+TEST(transform, real2complex_CPU) {
+
+    unsigned int rows = 32;
+    unsigned int cols = 64;
+    DSmatrix<float, cpu_impl> myMatrixReal(rows, cols);
+    generate_random_values(myMatrixReal.data(), rows*cols, -10.0f, 10.0f);
+    DSmatrix<std::complex<float>, cpu_impl> myMatrixComplex(rows, cols);
+
+    real2complex(myMatrixReal, myMatrixComplex);
+
+    for (unsigned int i = 1; i < rows; ++i)
+        for (unsigned int j = 0; j < cols; ++j) {
+            ASSERT_EQ(myMatrixComplex(i,j).real(), myMatrixReal(i,j));
+            ASSERT_EQ(myMatrixComplex(i,j).imag(), 0);
+        }
+}
+
 #ifdef CUDA
 TEST(transform, normL2_complex_CUDA) {
 

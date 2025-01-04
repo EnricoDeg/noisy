@@ -96,6 +96,39 @@ void normL2(const DSmatrix<Tdata, backend>&  inMat,
 
 template <typename Tdata, template <class> class  backend,
                           template <class> class  backendC>
+struct real2complex_impl{
+    static void doit(const DSmatrix<Tdata, backend>& inMat ,
+                           DSmatrix<typename backend<Tdata>::complex, backend>& outMat) {
+
+    t_dims  inDims = inMat.dims();
+    t_dims outDims = outMat.dims();
+    assert(inDims.rows == outDims.rows);
+    assert(inDims.cols == outDims.cols);
+
+    backendC<Tdata>::op::real2complex(inMat.data(), outMat.data(), inDims.rows, inDims.cols);
+}
+};
+
+template<typename T, template <class> class  backend> struct real2complex_helper;
+
+template<>
+struct real2complex_helper<float, cpu_impl> {
+    using type = real2complex_impl<float, cpu_impl, cpu_complex_impl>;
+};
+
+template<typename Tdata, template <class> class  backend>
+using real2complexCaller = typename real2complex_helper<Tdata, backend>::type;
+
+template<typename Tdata, template <class> class  backend>
+inline
+void real2complex(const DSmatrix<Tdata, backend>&  inMat ,
+                        DSmatrix<typename backend<Tdata>::complex, backend>&  outMat) {
+
+    return real2complexCaller<Tdata, backend>::doit(inMat, outMat);
+}
+
+template <typename Tdata, template <class> class  backend,
+                          template <class> class  backendC>
 struct convolve_impl {
 
     static t_dims doit(const DSmatrix<Tdata, backend>&  inMat ,

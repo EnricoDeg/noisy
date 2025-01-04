@@ -162,6 +162,11 @@ public:
                          unsigned int         mCols  ,
                          unsigned int         fRows  ,
                          unsigned int         fCols  );
+
+    static void real2complex(Tdata               * __restrict__ dataIn ,
+                             std::complex<Tdata> * __restrict__ dataOut,
+                             unsigned int                       mRows  ,
+                             unsigned int                       mCols  );
 };
 
 template class cpu_impl<float>;

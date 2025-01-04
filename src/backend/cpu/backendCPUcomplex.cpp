@@ -111,3 +111,13 @@ void cpu_complex_impl<Tdata>::op::convData(Tdata * __restrict__ dataIn ,
         }
     }
 }
+
+template <typename Tdata>
+void cpu_complex_impl<Tdata>::op::real2complex(Tdata               * __restrict__ dataIn ,
+                                               std::complex<Tdata> * __restrict__ dataOut,
+                                               unsigned int                       mRows  ,
+                                               unsigned int                       mCols  ) {
+
+    for (unsigned int i = 0; i < mRows * mCols; ++i)
+        dataOut[i] = {dataIn[i], 0};
+}
