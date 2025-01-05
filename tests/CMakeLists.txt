@@ -1,5 +1,5 @@
 # GoogleTest requires at least C++14
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Avoid warning about DOWNLOAD_EXTRACT_TIMESTAMP in CMake 3.24:
@@ -95,9 +95,25 @@ if (ENABLE_CUDA)
 endif()
 target_link_libraries(test_SLcoeffs GTest::gtest_main)
 
+if(ENABLE_CUDA)
+    set_source_files_properties(shearlet/test_SLsystem.cpp PROPERTIES LANGUAGE CUDA)
+endif()
+add_executable( test_SLsystem
+                shearlet/test_SLsystem.cpp
+              )
+target_link_libraries(test_SLsystem noisy)
+target_link_libraries(test_SLsystem ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES})
+if (ENABLE_CUDA)
+    target_link_libraries(test_SLsystem ${CUDA_LIBRARIES})
+    set_property(TARGET test_SLsystem PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+    target_link_libraries (test_SLsystem ${CUFFT_LIBRARIES} ${CUALGO_LIBRARIES})
+endif()
+target_link_libraries(test_SLsystem GTest::gtest_main)
+
 # Add all tests to GoogleTest
 include(GoogleTest)
 gtest_discover_tests(test_DSmatrix)
 gtest_discover_tests(test_FourierTransform)
 gtest_discover_tests(test_transformMatrix)
 gtest_discover_tests(test_SLcoeffs)
+gtest_discover_tests(test_SLsystem)
