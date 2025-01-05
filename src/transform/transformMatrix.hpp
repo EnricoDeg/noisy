@@ -78,7 +78,17 @@ t_dims upsample(const DSmatrix<Tdata, backend>& inMat  ,
 
 template <typename Tdata, template <class> class  backend>
 void pad(const DSmatrix<Tdata, backend>& inMat ,
-               DSmatrix<Tdata, backend>& outMat);
+               DSmatrix<Tdata, backend>& outMat) {
+
+    t_dims dims = inMat.dims();
+    t_dims dimsOut = outMat.dims();
+
+    Tdata * __restrict__ inData = inMat.data();
+    Tdata * __restrict__ outData = outMat.data();
+    backend<Tdata>::transform::pad(inData, outData,
+                                   dimsOut.rows, dimsOut.cols,
+                                   dims.rows, dims.cols);
+}
 
 template <typename Tdata, template <class> class  backend>
 void dshear(const DSmatrix<Tdata, backend>& inMat ,
@@ -93,6 +103,29 @@ void transpose(const DSmatrix<Tdata, backend>& inMat ,
 template <typename Tdata, template <class> class  backend>
 void normL2(const DSmatrix<Tdata, backend>&  inMat,
                   Tdata                     *out  );
+
+template <typename Tdata, template <class> class  backend>
+inline
+void matMul(const DSmatrix<Tdata, backend>&  inMatL,
+            const DSmatrix<Tdata, backend>&  inMatR,
+                  DSmatrix<Tdata, backend>&  outMat) {
+
+    t_dims inMatLDims = inMatL.dims();
+    t_dims inMatRDims = inMatR.dims();
+    t_dims outMatDims = outMat.dims();
+
+    assert(inMatL.cols == inMatR.rows);
+    assert(inMatL.rows == outMat.rows);
+    assert(inMatR.cols == outMat.cols);
+
+    backend<Tdata>::transform::matMul(inMatL.data(),
+                                  inMatR.data(),
+                                  outMat.data(),
+                                  inMatLDims.rows,
+                                  inMatLDims.cols,
+                                  inMatRDims.rows,
+                                  inMatRDims.cols);
+}
 
 template <typename Tdata, template <class> class  backend,
                           template <class> class  backendC>
