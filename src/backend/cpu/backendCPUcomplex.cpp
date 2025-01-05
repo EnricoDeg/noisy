@@ -123,6 +123,26 @@ void cpu_complex_impl<Tdata>::op::real2complex(Tdata               * __restrict_
 }
 
 template <typename Tdata>
+void cpu_complex_impl<Tdata>::op::complex2real(std::complex<Tdata> * __restrict__ dataIn ,
+                                               Tdata               * __restrict__ dataOut,
+                                               unsigned int                       mRows  ,
+                                               unsigned int                       mCols  ) {
+
+    for (unsigned int i = 0; i < mRows * mCols; ++i)
+        dataOut[i] = std::real(dataIn[i]);
+}
+
+template <typename Tdata>
+void cpu_complex_impl<Tdata>::op::divComplexByReal(std::complex<Tdata> * __restrict__ dataComplex ,
+                                                   Tdata               * __restrict__ dataReal    ,
+                                                   unsigned int                       mRows       ,
+                                                   unsigned int                       mCols       ) {
+
+    for (unsigned int i = 0; i < mRows * mCols; ++i)
+        dataComplex[i] /= dataReal[i];
+}
+
+template <typename Tdata>
 void cpu_complex_impl<Tdata>::op::reduceNmat(std::complex<Tdata> ** vecPtr,
                                              Tdata * __restrict__ outData,
                                              unsigned int rows,

@@ -253,6 +253,76 @@ void real2complex(const DSmatrix<Tdata, backend>&  inMat ,
 
 template <typename Tdata, template <class> class  backend,
                           template <class> class  backendC>
+struct complex2real_impl{
+    static void doit(const DSmatrix<typename backend<Tdata>::complex, backend>& inMat ,
+                           DSmatrix<Tdata, backend>& outMat) {
+
+    t_dims  inDims = inMat.dims();
+    t_dims outDims = outMat.dims();
+    assert(inDims.rows == outDims.rows);
+    assert(inDims.cols == outDims.cols);
+
+    backendC<Tdata>::op::complex2real(inMat.data(), outMat.data(), inDims.rows, inDims.cols);
+}
+};
+
+template<typename T, template <class> class  backend> struct complex2real_helper;
+
+template<>
+struct complex2real_helper<float, cpu_impl> {
+    using type = complex2real_impl<float, cpu_impl, cpu_complex_impl>;
+};
+
+template<typename Tdata, template <class> class  backend>
+using complex2realCaller = typename complex2real_helper<Tdata, backend>::type;
+
+template<typename Tdata, template <class> class  backend>
+inline
+void complex2real(const DSmatrix<typename backend<Tdata>::complex, backend>&  inMat ,
+                        DSmatrix<Tdata, backend>&  outMat) {
+
+    return complex2realCaller<Tdata, backend>::doit(inMat, outMat);
+}
+
+template <typename Tdata, template <class> class  backend,
+                          template <class> class  backendC>
+struct divComplexByReal_impl{
+
+    static void doit( DSmatrix<typename backend<Tdata>::complex, backend>& complexMat ,
+                      DSmatrix<Tdata, backend>& realMat) {
+
+        t_dims complexDims = complexMat.dims();
+        t_dims realDims = realMat.dims();
+        assert(complexDims.rows == realDims.rows);
+        assert(complexDims.cols == realDims.cols);
+
+        backendC<Tdata>::op::divComplexByReal(complexMat.data(),
+                                              realMat.data(),
+                                              complexDims.rows,
+                                              complexDims.cols);
+    }
+};
+
+template<typename T, template <class> class  backend> struct divComplexByReal_helper;
+
+template<>
+struct divComplexByReal_helper<float, cpu_impl> {
+    using type = divComplexByReal_impl<float, cpu_impl, cpu_complex_impl>;
+};
+
+template<typename Tdata, template <class> class  backend>
+using divComplexByRealCaller = typename divComplexByReal_helper<Tdata, backend>::type;
+
+template<typename Tdata, template <class> class  backend>
+inline
+void divComplexByReal( DSmatrix<typename backend<Tdata>::complex, backend>&  complexMat ,
+                       DSmatrix<Tdata, backend>&  realMat) {
+
+    return divComplexByRealCaller<Tdata, backend>::doit(complexMat, realMat);
+}
+
+template <typename Tdata, template <class> class  backend,
+                          template <class> class  backendC>
 struct convolve_impl {
 
     static t_dims doit(const DSmatrix<Tdata, backend>&  inMat ,

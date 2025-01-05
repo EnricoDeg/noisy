@@ -181,6 +181,16 @@ public:
                              unsigned int                       mRows  ,
                              unsigned int                       mCols  );
 
+    static void complex2real(std::complex<Tdata> * __restrict__ dataIn ,
+                             Tdata               * __restrict__ dataOut,
+                             unsigned int                       mRows  ,
+                             unsigned int                       mCols  );
+
+    static void divComplexByReal(std::complex<Tdata> * __restrict__ dataComplex ,
+                                 Tdata               * __restrict__ dataReal    ,
+                                 unsigned int                       mRows       ,
+                                 unsigned int                       mCols       );
+
     static void reduceNmat(std::complex<Tdata> ** vecPtr,
                            Tdata * __restrict__ outData,
                            unsigned int rows,
