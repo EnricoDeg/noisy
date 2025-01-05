@@ -1,0 +1,36 @@
+/** @mainpage
+
+<h2>Autors</h2>
+
+Enrico Degregori
+
+<h2>Table of Contents</h2>
+
+- @ref license
+- @ref installation
+
+@defgroup backend_cpu
+          CPU backend
+
+@defgroup backend_cuda
+          CUDA backend
+
+@defgroup dataStructure
+          data structures
+
+@defgroup FourierTransform
+          Fourier Transform module
+
+@defgroup ImageLoader
+          Image Loader module
+
+@defgroup transform
+          transform module
+
+@defgroup SLsystem
+          SL system module
+
+@defgroup tests
+          All tests
+
+*/

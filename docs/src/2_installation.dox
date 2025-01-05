@@ -1,0 +1,31 @@
+/**
+ * \page installation Installation
+
+\tableofcontents
+
+Dependencies:
+ - CMake
+ - CUDA
+ - FFTW
+ - cuFFT
+ - cuAlgo
+ - OpenCV
+
+Installation:
+\code
+export CUFFT_ROOT=/path/to/cufft/root
+export CUALGO_ROOT=/path/to/cualgo/build
+export FFTW_ROOT=/path/to/fftw/root
+mkdir build
+cd build
+cmake ..
+make install
+\endcode
+
+Run tests:
+\code
+cd build/tests
+ctest
+\endcode
+
+*/
