@@ -31,6 +31,7 @@
 #define BACKENDCPU_HPP_
 
 #include <complex>
+#include <array>
 
 #include "src/backend/cpu/backendCPUfourier.hpp"
 
@@ -83,6 +84,11 @@ public:
     static void divScalarInPlace(Tdata * __restrict__ data ,
                                  unsigned int         size ,
                                  Tdata                value);
+
+    static void prodScalarInPlace(Tdata * __restrict__ data ,
+                                  unsigned int         size ,
+                                  Tdata                value);
+
     static void mirror(Tdata * __restrict__ inData ,
                        Tdata * __restrict__ outData,
                        unsigned int         size   );
@@ -174,6 +180,12 @@ public:
                              std::complex<Tdata> * __restrict__ dataOut,
                              unsigned int                       mRows  ,
                              unsigned int                       mCols  );
+
+    static void reduceNmat(std::complex<Tdata> ** vecPtr,
+                           Tdata * __restrict__ outData,
+                           unsigned int rows,
+                           unsigned int cols,
+                           unsigned int numberOfMat);
 };
 
 template class cpu_impl<float>;

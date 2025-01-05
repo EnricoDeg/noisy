@@ -121,3 +121,17 @@ void cpu_complex_impl<Tdata>::op::real2complex(Tdata               * __restrict_
     for (unsigned int i = 0; i < mRows * mCols; ++i)
         dataOut[i] = {dataIn[i], 0};
 }
+
+template <typename Tdata>
+void cpu_complex_impl<Tdata>::op::reduceNmat(std::complex<Tdata> ** vecPtr,
+                                             Tdata * __restrict__ outData,
+                                             unsigned int rows,
+                                             unsigned int cols,
+                                             unsigned int numberOfMat) {
+
+    for (unsigned int j = 0; j < numberOfMat; ++j) {
+        std::complex<Tdata> * __restrict in  = vecPtr[j];
+        for (unsigned int i = 0; i < rows * cols; ++i)
+            outData[i] += std::abs(in[i]) * std::abs(in[i]);
+    }
+}

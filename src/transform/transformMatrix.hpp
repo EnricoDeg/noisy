@@ -32,6 +32,8 @@
 
 #include <iostream>
 #include <cassert>
+#include <array>
+#include <vector>
 
 #include "src/dataStructure/dataStruct.hpp"
 #include "src/backend/cpu/backendCPU.hpp"
@@ -169,6 +171,52 @@ void matMul(const DSmatrix<Tdata, backend>&  inMatL,
                                   inMatRDims.rows,
                                   inMatRDims.cols);
 }
+
+// TODO: fix implementation for CUDA backend
+template <typename Tdata, template <class> class  backend,
+                          template <class> class  backendC>
+struct reduceNmat_impl {
+
+    using complex_type = typename backend<Tdata>::complex;
+
+    static void doit(std::vector<DSmatrix<complex_type, backend>*>& matIn,
+                     DSmatrix<Tdata, backend>& outMat) {
+
+        t_dims inDims = matIn[0]->dims();
+        t_dims outDims = outMat.dims();
+        assert(inDims.rows == outDims.rows);
+        assert(inDims.cols == outDims.cols);
+
+        unsigned int numberOfMat = matIn.size();
+        unsigned int matSize = matIn[0]->size();
+        // pack pointers to data
+        complex_type * vecPtr[numberOfMat];
+        for (unsigned int i = 0; i < numberOfMat; ++i)
+            vecPtr[i] = matIn[i]->data();
+
+        backendC<Tdata>::op::reduceNmat(vecPtr, outMat.data(),
+                                        outDims.rows, outDims.cols, numberOfMat);
+    }
+};
+
+template<typename T, template <class> class  backend> struct reduceNmat_helper;
+
+template<>
+struct reduceNmat_helper<float, cpu_impl> {
+    using type = reduceNmat_impl<float, cpu_impl, cpu_complex_impl>;
+};
+
+template<typename Tdata, template <class> class  backend>
+using reduceNmatCaller = typename reduceNmat_helper<Tdata, backend>::type;
+
+template<typename Tdata, template <class> class  backend>
+inline
+void reduceNmat(std::vector<DSmatrix<typename backend<Tdata>::complex, backend>*>& matIn,
+                DSmatrix<Tdata, backend>& outMat) {
+
+    return reduceNmatCaller<Tdata, backend>::doit(matIn, outMat);
+}
+
 
 template <typename Tdata, template <class> class  backend,
                           template <class> class  backendC>
