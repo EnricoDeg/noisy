@@ -58,10 +58,22 @@ TEST(transform, downsample_dim0_CPU) {
     DSmatrix<float, cpu_impl> myMatrix(rows, cols);
     generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
     DSmatrix<float, cpu_impl> myMatrixDown(rows/2, cols);
-    downsample(myMatrix, 0, stride, myMatrixDown);
+    downsample(myMatrix, 0, stride, &myMatrixDown);
     for (unsigned int i = 0; i < rows/2; ++i)
         for (unsigned int j = 0; j < cols; ++j)
             ASSERT_EQ(myMatrixDown(i,j), myMatrix(stride*i,j));
+}
+
+TEST(transform, downsample_query_dims_CPU) {
+
+    unsigned int rows = 32;
+    unsigned int cols = 64;
+    unsigned int stride = 2;
+    DSmatrix<float, cpu_impl> myMatrix(rows, cols);
+    generate_random_values(myMatrix.data(), rows*cols, -10.0f, 10.0f);
+    t_dims dimsOut = downsample(myMatrix, 0, stride);
+    ASSERT_EQ(dimsOut.rows, rows / 2);
+    ASSERT_EQ(dimsOut.cols, cols);
 }
 
 TEST(transform, upsample_dim0_CPU) {
@@ -84,7 +96,7 @@ TEST(transform, upsample_dim0_CPU) {
         }
 }
 
-TEST(transform, upsample_empty_CPU) {
+TEST(transform, upsample_query_dims_CPU) {
 
     unsigned int rows = 32;
     unsigned int cols = 64;

@@ -37,44 +37,6 @@
 #include <cassert>
 
 template <typename Tdata, template <class> class  backend>
-void downsample(const DSmatrix<Tdata, backend>& inMat  ,
-                      unsigned int              dim    ,
-                      unsigned int              stride ,
-                      DSmatrix<Tdata, backend>& outMat ) {
-
-    t_dims dims = inMat.dims();
-    if (dim == 0) {
-        unsigned int count = 0;
-        for (unsigned int i = 0; i < dims.rows; i+=stride, ++count);
-        t_dims dimsOut = outMat.dims();
-        assert(dimsOut.rows == count);
-    } else {
-        unsigned int count = 0;
-        for (unsigned int i = 0; i < dims.cols; i+=stride, ++count);
-        t_dims dimsOut = outMat.dims();
-        assert(dimsOut.cols == count);
-    }
-
-    Tdata * __restrict__ inData = inMat.data();
-    Tdata * __restrict__ outData = outMat.data();
-    backend<Tdata>::transform::downsample(inData, outData, dim, stride, dims.rows, dims.cols);
-}
-
-template <typename Tdata, template <class> class  backend>
-void pad(const DSmatrix<Tdata, backend>& inMat ,
-               DSmatrix<Tdata, backend>& outMat) {
-
-    t_dims dims = inMat.dims();
-    t_dims dimsOut = outMat.dims();
-
-    Tdata * __restrict__ inData = inMat.data();
-    Tdata * __restrict__ outData = outMat.data();
-    backend<Tdata>::transform::pad(inData, outData,
-                                   dimsOut.rows, dimsOut.cols,
-                                   dims.rows, dims.cols);
-}
-
-template <typename Tdata, template <class> class  backend>
 void dshear(const DSmatrix<Tdata, backend>& inMat ,
                   DSmatrix<Tdata, backend>& outMat,
                   long int                  k     ,
@@ -115,65 +77,6 @@ void normL2(const DSmatrix<Tdata, backend>&  inMat,
 }
 
 // INSTANTIATE
-
-// CPU
-template void downsample(const DSmatrix<float, cpu_impl>& inMat  ,
-                               unsigned int               dim    ,
-                               unsigned int               stride ,
-                               DSmatrix<float, cpu_impl>& outMat );
-template void downsample(const DSmatrix<std::complex<float>, cpu_impl>& inMat  ,
-                               unsigned int                             dim    ,
-                               unsigned int                             stride ,
-                               DSmatrix<std::complex<float>, cpu_impl>& outMat );
-template void downsample(const DSmatrix<double, cpu_impl>& inMat  ,
-                               unsigned int                dim    ,
-                               unsigned int                stride ,
-                               DSmatrix<double, cpu_impl>& outMat );
-template void downsample(const DSmatrix<std::complex<double>, cpu_impl>& inMat  ,
-                               unsigned int                              dim    ,
-                               unsigned int                              stride ,
-                               DSmatrix<std::complex<double>, cpu_impl>& outMat );
-// CUDA
-#ifdef CUDA
-template void downsample(const DSmatrix<float, cuda_impl>& inMat  ,
-                               unsigned int                dim    ,
-                               unsigned int                stride ,
-                               DSmatrix<float, cuda_impl>& outMat );
-template void downsample(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat  ,
-                               unsigned int                                 dim    ,
-                               unsigned int                                 stride ,
-                               DSmatrix<thrust::complex<float>, cuda_impl>& outMat );
-template void downsample(const DSmatrix<double, cuda_impl>& inMat  ,
-                               unsigned int                 dim    ,
-                               unsigned int                 stride ,
-                               DSmatrix<double, cuda_impl>& outMat );
-template void downsample(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat  ,
-                               unsigned int                                  dim    ,
-                               unsigned int                                  stride ,
-                               DSmatrix<thrust::complex<double>, cuda_impl>& outMat );
-#endif
-
-// CPU
-template void pad(const DSmatrix<float, cpu_impl>& inMat ,
-                        DSmatrix<float, cpu_impl>& outMat);
-template void pad(const DSmatrix<std::complex<float>, cpu_impl>& inMat ,
-                        DSmatrix<std::complex<float>, cpu_impl>& outMat);
-template void pad(const DSmatrix<double, cpu_impl>& inMat ,
-                        DSmatrix<double, cpu_impl>& outMat);
-template void pad(const DSmatrix<std::complex<double>, cpu_impl>& inMat ,
-                        DSmatrix<std::complex<double>, cpu_impl>& outMat);
-
-// CUDA
-#ifdef CUDA
-template void pad(const DSmatrix<float, cuda_impl>& inMat ,
-                        DSmatrix<float, cuda_impl>& outMat);
-template void pad(const DSmatrix<thrust::complex<float>, cuda_impl>& inMat ,
-                        DSmatrix<thrust::complex<float>, cuda_impl>& outMat);
-template void pad(const DSmatrix<double, cuda_impl>& inMat ,
-                        DSmatrix<double, cuda_impl>& outMat);
-template void pad(const DSmatrix<thrust::complex<double>, cuda_impl>& inMat ,
-                        DSmatrix<thrust::complex<double>, cuda_impl>& outMat);
-#endif
 
 // CPU
 template void dshear(const DSmatrix<float, cpu_impl>& inMat ,

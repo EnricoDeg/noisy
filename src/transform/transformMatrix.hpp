@@ -40,10 +40,53 @@
 #endif
 
 template <typename Tdata, template <class> class  backend>
-void downsample(const DSmatrix<Tdata, backend>& inMat ,
-                      unsigned int              dim   ,
-                      unsigned int              stride,
-                      DSmatrix<Tdata, backend>& outMat);
+inline
+t_dims downsample(const DSmatrix<Tdata, backend>& inMat ,
+                        unsigned int              dim   ,
+                        unsigned int              stride,
+                        DSmatrix<Tdata, backend>* outMat = nullptr){
+
+    t_dims dims = inMat.dims();
+
+    if (outMat == nullptr) {
+
+        if (dim == 0) {
+
+            unsigned int count = 0;
+            for (unsigned int i = 0; i < dims.rows; i+=stride, ++count);
+            return t_dims{.rows = count, .cols = dims.cols};
+        } else {
+
+            unsigned int count = 0;
+            for (unsigned int i = 0; i < dims.cols; i+=stride, ++count);
+            return t_dims{.rows = dims.rows, .cols = count};
+        }
+    }
+
+    if (dim == 0) {
+        unsigned int count = 0;
+        for (unsigned int i = 0; i < dims.rows; i+=stride, ++count);
+        t_dims dimsOut = outMat->dims();
+        assert(dimsOut.rows == count);
+        assert(dimsOut.cols == dims.cols);
+    } else {
+        unsigned int count = 0;
+        for (unsigned int i = 0; i < dims.cols; i+=stride, ++count);
+        t_dims dimsOut = outMat->dims();
+        assert(dimsOut.rows == dims.rows);
+        assert(dimsOut.cols == count);
+    }
+
+    Tdata * __restrict__ inData = inMat.data();
+    Tdata * __restrict__ outData = outMat->data();
+    backend<Tdata>::transform::downsample(inData,
+                                          outData,
+                                          dim,
+                                          stride,
+                                          dims.rows,
+                                          dims.cols);
+    return outMat->dims();
+}
 
 template <typename Tdata, template <class> class  backend>
 t_dims upsample(const DSmatrix<Tdata, backend>& inMat  ,
