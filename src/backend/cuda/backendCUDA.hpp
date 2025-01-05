@@ -80,6 +80,9 @@ public:
     static void divScalarInPlace(Tdata * __restrict__ data ,
                                  unsigned int         size ,
                                  Tdata                value);
+    static void prodScalarInPlace(Tdata * __restrict__ data ,
+                                  unsigned int         size ,
+                                  Tdata                value);
     static void mirror(Tdata * __restrict__ inData ,
                        Tdata * __restrict__ outData,
                        unsigned int         size   );

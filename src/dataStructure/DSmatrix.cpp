@@ -126,6 +126,14 @@ DSmatrix<Tdata, backend>& DSmatrix<Tdata, backend>::operator*=(const DSmatrix<Td
     return *this;
 }
 
+template <typename Tdata, template <class> class backend>
+DSmatrix<Tdata, backend>& DSmatrix<Tdata, backend>::operator*=(const Tdata b) {
+
+    backend<Tdata>::op::prodScalarInPlace(mData, mRows * mCols, b);
+
+    return *this;
+}
+
 // inline info
 template
 < typename Tdata,

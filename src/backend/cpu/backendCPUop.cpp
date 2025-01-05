@@ -102,6 +102,15 @@ void cpu_impl<Tdata>::op::divScalarInPlace(Tdata * __restrict__ data ,
 }
 
 template <typename Tdata>
+void cpu_impl<Tdata>::op::prodScalarInPlace(Tdata * __restrict__ data ,
+                                            unsigned int         size ,
+                                            Tdata                value) {
+
+    for (unsigned int i = 0; i < size; ++i)
+        data[i] *= value;
+}
+
+template <typename Tdata>
 void cpu_impl<Tdata>::op::mirror(Tdata * __restrict__ inData ,
                                  Tdata * __restrict__ outData,
                                  unsigned int         size   ) {
