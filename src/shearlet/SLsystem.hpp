@@ -44,6 +44,8 @@
 
 #include "src/fourier/FourierTransform.hpp"
 
+#include "src/shearlet/SLfilter.hpp"
+
 template<typename Tdata, template <class> class  backend>
 class SLcoeffs {
 
@@ -52,7 +54,7 @@ public:
     SLcoeffs() {};
 
     ~SLcoeffs() {
-        for (size_t i = 0; i < m_coeffs.size(); ++i)
+        for (unsigned int i = 0; i < m_coeffs.size(); ++i)
             delete(m_coeffs[i]);
     };
 
@@ -60,7 +62,7 @@ public:
         m_coeffs.push_back( new DSmatrix<Tdata, backend>( matIn ) );
     }
 
-    DSmatrix<Tdata, backend> * getElement(size_t i) {
+    DSmatrix<Tdata, backend> * getElement(unsigned int i) {
         return m_coeffs[i];
     }
 
@@ -68,14 +70,14 @@ public:
 
         assert(threshold.size() == m_coeffs.size());
 
-        for (size_t i = 0; i < m_coeffs.size(); ++i) {
+        for (unsigned int i = 0; i < m_coeffs.size(); ++i) {
 
             DSmatrix<Tdata, backend>* mat = m_coeffs[i];
             mat->applyThreshold(threshold[i]);
         }
     }
 
-    void muteShearlet(size_t i) {
+    void muteShearlet(unsigned int i) {
 
         assert(i < m_coeffs.size());
 
@@ -86,5 +88,68 @@ public:
 private:
     std::vector<DSmatrix<Tdata, backend>*> m_coeffs;
 };
+
+template<typename T, template <class> class  backend>
+class SLsystem
+{
+
+private:
+
+    using complex_type = typename backend<T>::complex;
+    using DSmatrixReal = DSmatrix<T, backend>;
+    using DSmatrixComplex = DSmatrix<complex_type, backend>;
+    using _SLfilter = SLfilter<T, backend>;
+
+    struct t_FilterDirections {
+        using complex_type = typename backend<T>::complex;
+        std::deque<DSmatrix<complex_type, backend>*> dir;
+    };
+
+    struct t_FiltersWedgeBandLow {
+
+        using complex_type = typename backend<T>::complex;
+
+        std::vector<DSmatrix<complex_type, backend>*> bandpass;
+        std::vector<t_FilterDirections*> wedge;
+        DSmatrix<complex_type, backend>* lowpass;
+    };
+
+    struct t_Filters {
+
+        t_FiltersWedgeBandLow * cone1;
+        t_FiltersWedgeBandLow * cone2;
+    };
+
+    t_FiltersWedgeBandLow * computeFilters(unsigned int nrows,
+                                           unsigned int ncols,
+                                           std::vector<int>& shearLevels);
+
+    t_Filters * prepareFilters(unsigned int nrows,
+                               unsigned int ncols,
+                               std::vector<int>& shearLevels);
+
+    std::vector<int> computeIdxs(std::vector<int>& shearLevels);
+
+    unsigned int m_rows;
+    unsigned int m_cols;
+    FourierTransform<T, backend> * m_fftOp;
+    std::vector<DSmatrixComplex*> m_shearlets;
+    DSmatrixReal * m_weights;
+    std::map<int, unsigned int> m_shearlevel2index;
+
+public:
+
+    SLsystem(unsigned int rows,
+             unsigned int cols,
+             unsigned int Nscales);
+
+    ~SLsystem();
+
+    SLcoeffs<complex_type, backend> decode(DSmatrixReal &image);
+
+    DSmatrixReal recover(SLcoeffs<complex_type, backend> &coeffs);
+};
+
+template class SLsystem<float, cpu_impl>;
 
 #endif
