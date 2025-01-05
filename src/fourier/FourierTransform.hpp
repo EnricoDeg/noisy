@@ -213,6 +213,14 @@ public:
         convFF2F(A, B, result);
     }
 
+    void convDF2F( DSmatrix<complex_type, backendM>& A ,
+                   DSmatrix<complex_type, backendM>& B ,
+                   DSmatrix<complex_type, backendM>& result) {
+
+        fftWithShifts(A);
+        convFF2F(A, B, result);
+    }
+
 private:
     using fft_type = typename backend<Tdata>::fourier;
     std::shared_ptr<fft_type> m_impl;
