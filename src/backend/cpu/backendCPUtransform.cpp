@@ -252,3 +252,22 @@ void cpu_impl<Tdata>::transform::normL2(Tdata * __restrict__ inData ,
     for (unsigned int i = 0; i < size; ++i)
         *outData += std::abs(inData[i]) * std::abs(inData[i]);
 }
+
+template <typename Tdata>
+void cpu_impl<Tdata>::transform::matMul(Tdata * __restrict__ inDataL,
+                                        Tdata * __restrict__ inDataR,
+                                        Tdata * __restrict__ outData,
+                                        unsigned int inRowsL,
+                                        unsigned int inColsL,
+                                        unsigned int inRowsR,
+                                        unsigned int inColsR) {
+
+    for (unsigned int i = 0; i < inRowsL; ++i) {
+        for (unsigned int j = 0; j < inColsR; ++j) {
+            for (unsigned int k = 0; k < inColsL; ++k ) {
+                outData[i * inColsR + j] += inDataL[i * inColsL + k] *
+                                            inDataR[k * inColsR + j];
+            }
+        }
+    }
+}

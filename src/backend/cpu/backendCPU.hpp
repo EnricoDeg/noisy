@@ -127,6 +127,13 @@ public:
     static void normL2(Tdata * __restrict__ inData ,
                        Tdata * __restrict__ outData,
                        unsigned int         size   );
+    static void matMul(Tdata * __restrict__ inDataL,
+                       Tdata * __restrict__ inDataR,
+                       Tdata * __restrict__ outData,
+                       unsigned int inRowsL,
+                       unsigned int inColsL,
+                       unsigned int inRowsR,
+                       unsigned int inColsR);
 };
 
 template <typename Tdata>
